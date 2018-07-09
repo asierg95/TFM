@@ -1,0 +1,18 @@
+---
+
+#MASTERS HOSTNAMES
+
+- name: Change /etc/hostname file with new hostname
+  template: src=hostname.j2 dest=/etc/hostname
+
+- name: Add static hostname
+  command: "hostnamectl set-hostname {{ nombre_servers }}{{ groups['masters_public'].index(inventory_hostname)+1 }} --static"
+
+- name: reboot host
+  command: /usr/bin/systemd-run --on-active=10 /usr/bin/systemctl reboot
+  async: 0
+  poll: 0
+
+- name: wait for host sshd
+  become: false 
+  local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=400 delay=60

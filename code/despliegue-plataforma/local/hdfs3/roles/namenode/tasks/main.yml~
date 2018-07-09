@@ -1,0 +1,12 @@
+---
+
+#NAMENODES
+
+- name: Add Namenode directory
+  file: path={{ hdfs_name_dir }} state=directory mode=0755 owner={{ user }}
+
+- name: Add journalnode directory
+  file: path={{ hdfs_journal_dir }} state=directory mode=0755 owner={{ user }}
+
+- name: Add slaves file
+  template: src=slaves.j2 dest={{ hadoop_home }}/etc/hadoop/slaves

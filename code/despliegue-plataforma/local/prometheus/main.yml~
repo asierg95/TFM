@@ -1,0 +1,31 @@
+---
+
+- hosts: prometheus:node_exporter:jmx_exporter
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: common
+
+- hosts: prometheus
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: prometheus
+
+- hosts: node_exporter
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: node_Exporter
+
+- hosts: jmx_exporter
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+#  - role: docker
+  - role: JMX_Exporter
+

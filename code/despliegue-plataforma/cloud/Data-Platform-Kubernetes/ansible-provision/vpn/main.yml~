@@ -1,0 +1,9 @@
+---
+# playbook primera configuracion de instancia AWS en subred publica
+
+- hosts: bootstrap_public
+  remote_user: "{{ user }}"
+  sudo: True
+  serial: 1
+  roles:
+  - role: instalarVPN

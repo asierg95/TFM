@@ -1,0 +1,14 @@
+---
+# playbook configuracion traefik
+
+- hosts: traefik
+  remote_user: "{{usuario}}"
+  become: True
+  serial: 1
+  roles:
+  - role: comun
+  - role: systemd
+
+
+
+

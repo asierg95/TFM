@@ -1,0 +1,25 @@
+---
+
+#MACHINES CONFIGS#
+
+user: ikerlan
+
+#SPARK ENVIRONMENTS
+spark_master_webui_port: 9090
+
+#VERSIONS#
+scala_version: scala-2.12.1
+spark_version: spark-2.1.1
+spark_release: spark-2.1.1-bin-hadoop2.7
+jdk_release: jdk-8u131-linux-x64
+
+
+#HOMES#
+spark_home: "/opt/spark"
+java_home: /usr/java/jdk1.8.0_60/jre
+spark_log_path: "{{ spark_home }}/logs"
+
+#DOWNLOAD URLs#
+scala_url: "www.scala-lang.org/files/archive/{{ scala_version }}.rpm"
+spark_url: "http://mirror.cc.columbia.edu/pub/software/apache/spark/{{ spark_version }}/{{ spark_release }}.tgz"
+jdk_url: http://download.oracle.com/otn-pub/java/jdk/8u131-b11/d54c1d3a095b4ff2b6607d096fa80163/{{ jdk_release }}.rpm

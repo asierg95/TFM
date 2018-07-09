@@ -1,0 +1,18 @@
+---
+
+#MASTER & SLAVES
+
+- hosts: masters:slaves
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  #- role: java8
+  - role: common
+
+- hosts: masters
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: start-spark

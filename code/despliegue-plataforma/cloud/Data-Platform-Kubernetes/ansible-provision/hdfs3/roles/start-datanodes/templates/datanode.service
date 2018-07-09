@@ -1,0 +1,15 @@
+[Unit]
+Description=Datanode
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart={{ datanode_start_script }}
+ExecStop={{ datanode_stop_script }}
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target
+

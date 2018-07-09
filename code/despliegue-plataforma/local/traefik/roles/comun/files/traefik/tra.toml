@@ -1,0 +1,216 @@
+################################################################
+# Global configuration
+################################################################
+
+ [entryPoints]
+   [entryPoints.https]
+   address = ":443"
+
+defaultEntryPoints= ["https"]
+
+# Timeout in seconds.
+# Duration to give active requests a chance to finish during hot-reloads
+#
+# Optional
+# Default: 10
+#
+ graceTimeOut = 10
+
+# Traefik logs file
+# If not defined, logs to stdout
+#
+# Optional
+#
+# traefikLogsFile = "log/traefik.log"
+
+# Access logs file
+#
+# Optional
+#
+# accessLogsFile = "log/access.log"
+
+# Log level
+#
+# Optional
+# Default: "ERROR"
+#
+logLevel = "DEBUG"
+
+# SSL certificates and keys
+# You may add several certificate/key pairs to terminate HTTPS for multiple domain names using TLS SNI
+#
+# Optional
+#
+ [[certificates]]
+CertFile = "/traefik.pem"
+KeyFile = "/traefik.key"
+
+
+# Backends throttle duration: minimum duration between 2 events from providers
+# before applying a new configuration. It avoids unnecessary reloads if multiples events
+# are sent in a short amount of time.
+#
+# Optional
+# Default: "2s"
+#
+# ProvidersThrottleDuration = "5s"
+
+
+################################################################
+# Web configuration backend
+################################################################
+
+# Enable web configuration backend
+#
+# Optional
+#
+ [web]
+
+# Web administration port
+#
+# Required
+#
+ address = ":8080"
+
+# SSL certificate and key used
+#
+# Optional
+#
+ CertFile = "/traefik.pem"
+ KeyFile = "/traefik.key"
+
+
+################################################################
+# File configuration backend
+################################################################
+
+# Enable file configuration backend
+#
+# Optional
+#
+ [file]
+
+# Rules file
+# If defined, traefik will load rules from this file,
+# otherwise, it will load rules from current file (cf Sample rules below).
+#
+# Optional
+#
+ filename = "rules.toml"
+
+# Enable watch file changes
+#
+# Optional
+#
+watch = true
+
+################################################################
+# Mesos/Marathon configuration backend
+################################################################
+
+# Enable Marathon configuration backend
+#
+# Optional
+#
+[marathon]
+
+# Marathon server endpoint.
+# You can also specify multiple endpoint for Marathon:
+# endpoint := "http://10.241.1.71:8080,10.241.1.72:8080,10.241.1.73:8080"
+#
+# Required
+#
+endpoint = "http://172.16.8.161:8080,http://172.16.8.162:8080,http://172.16.8.163:8080"
+
+# Network interface used to call Marathon web services. Needed in case of multiple network interfaces.
+# Optional
+# Default: "eth0"
+#
+networkInterface = "eth0"
+
+# Enable watch Marathon changes
+#
+# Optional
+#
+watch = true
+
+# Default domain used.
+# Can be overridden by setting the "traefik.domain" label on an application.
+#
+# Required
+#
+ domain = "ikcloud.ikerlan.es"
+
+# Override default configuration template. For advanced users :)
+#
+# Optional
+#
+#filename = "marathon.tmpl"
+
+################################################################
+# Docker configuration backend
+################################################################
+
+# Enable Docker configuration backend
+#
+# Optional
+#
+# [docker]
+
+# Docker server endpoint. Can be a tcp or a unix socket endpoint.
+#
+# Required
+#
+# endpoint = "unix:///var/run/docker.sock"
+
+# Default domain used.
+# Can be overridden by setting the "traefik.domain" label on a container.
+#
+# Required
+#
+# domain = "ikcloud.ikerlan.es"
+
+# Enable watch docker changes
+#
+# Optional
+#
+# watch = true
+
+# Override default configuration template. For advanced users :)
+#
+# Optional
+#
+# filename = "docker.tmpl"
+
+# Enable docker TLS connection
+#
+# Optional
+#
+#  [docker.tls]
+#  ca = "/etc/ssl/ca.crt"
+#  cert = "/etc/ssl/docker.crt"
+#  key = "/etc/ssl/docker.key"
+#  insecureskipverify = true
+
+
+################################################################
+# Sample rules
+################################################################
+#[file]
+
+ # rules
+#[backends]
+#  [backends.backend1]
+#    [backends.backend1.LoadBalancer]
+#      method = "drr"
+#    [backends.backend1.servers.server1]
+#    url = "http://172.16.8.160:80"
+
+#[frontends]
+#  [frontends.frontend1]
+#  backend = "backend1"
+#  passHostHeader = true
+#    [frontends.frontend1.routes.manager]
+#    rule = "Host"
+#    value = "manager.ikcloud.ikerlan.es"
+

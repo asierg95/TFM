@@ -1,0 +1,74 @@
+---
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  ignore_errors: True
+
+- name: Download Scala rpm
+  get_url: url={{ scala_url }} dest=/home/{{ user }}/{{ scala_version }}.rpm validate_certs=False
+
+- name: Install Scala rpm from a local file
+  yum:
+    name: "/home/{{ user }}/{{ scala_version }}.rpm"
+    state: present
+
+- name: Install epel-release
+  yum:
+    name: epel-release
+    state: present
+
+- name: Update Centos
+  yum: name=* state=latest
+
+- name: Install R
+  yum:
+    name: R
+    state: present
+
+- name: Download Spark
+  get_url: url={{ spark_url }} dest=/home/{{ user }}/{{ spark_release }}.tgz validate_certs=False
+
+- name: Check if Spark is already installed
+  stat:
+    path: "{{ spark_home }}"
+  register: spark_home_path
+
+- name: Unzip Spark
+  command: "{{ item }}"
+  with_items:
+  - tar xvf /home/{{ user }}/{{ spark_release }}.tgz
+  - mv -n /home/{{ user }}/{{ spark_release }} {{ spark_home }}
+  when: spark_home_path.stat.exists == False
+
+- name: Create log directory
+  file: 
+    path={{ spark_log_path }} 
+    state=directory 
+    mode=0755 
+    owner={{ user }}
+
+- name: Chown spark directory
+  file: 
+    path={{ spark_home }} 
+    mode=0755 
+    owner={{ user }}
+    recurse=yes
+
+- name: Setup the dedicated user environment
+  blockinfile:
+    dest: /home/{{ user }}/.bashrc
+    block: |
+      #Spark path# 
+      export PATH=$PATH:$SPARK_HOME/bin
+      export SPARK_HOME={{ spark_home }}
+
+- name: Reload environment variables
+  shell: source ~/.bashrc
+  become: true
+  become_user: "{{ user }}"
+
+- name: Add spark slaves
+  template: src=slaves.j2 dest={{ spark_home }}/conf/slaves
+
+- name: Add spark environments
+  template: src=spark-env.sh.j2 dest={{ spark_home }}/conf/spark-env.sh

@@ -1,0 +1,7 @@
+---
+
+usuario: ikerlan
+
+nombre_servers: dcos-master
+nombre_clientes: dcos-slave
+

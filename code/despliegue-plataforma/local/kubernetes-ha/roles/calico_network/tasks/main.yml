@@ -1,0 +1,9 @@
+---
+
+# Calico network installation
+
+- name: kubectl install calico network
+  command: kubectl apply -f {{ item }}
+  with_items:
+     - "{{ calico_rback_url }}"
+     - "{{ calico_url }}"

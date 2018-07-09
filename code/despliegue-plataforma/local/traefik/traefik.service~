@@ -1,0 +1,14 @@
+[Unit]
+Description=Traefik
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/home/ikerlan/traefik1 --configFile=/home/ikerlan/traefik/traefik.toml
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+

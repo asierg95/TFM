@@ -1,0 +1,49 @@
+
+---
+
+#Arrancar datanodes
+
+#Datanode Start script
+- name: Check if the datanode start_script already exists
+  stat:
+    path: "{{ datanode_start_script }}"
+  register: datanode_start_script_path
+
+- name: Copy datanode_start.sh
+  template: src=datanode_start.sh dest={{ datanode_start_script }}
+  when: datanode_start_script_path.stat.exists == False
+
+- name: Changing perm of "datanode_start.sh", adding "+x"
+  file: dest={{ datanode_start_script }} mode=a+x
+
+#Datanode Stop script
+- name: Check if the datanode stop_script already exists
+  stat:
+    path: "{{ datanode_stop_script }}"
+  register: datanode_stop_script_path
+
+- name: Copy datanode_stop.sh
+  template: src=datanode_stop.sh dest={{ datanode_stop_script }}
+  when: datanode_stop_script_path.stat.exists == False
+
+- name: Changing perm of "datanode_stop.sh", adding "+x"
+  file: dest={{ datanode_stop_script }} mode=a+x
+
+#Datanode service
+- name: Check if the datanode service already exists
+  stat:
+    path: "{{ services_directory }}/{{ datanode_service }}"
+  register: datanode_service_path
+
+- name: Create datanode service
+  template: src=datanode.service dest={{ services_directory }}/{{ datanode_service }}
+  when: datanode_service_path.stat.exists == False
+
+- name: Start/Enable datanode service 
+  systemd:
+    daemon_reload: yes
+    state: started
+    enabled: yes
+    name: "{{ datanode_service }}"
+
+

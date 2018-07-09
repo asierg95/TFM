@@ -1,0 +1,7 @@
+---
+
+- name: start all spark cluster
+  command: "$SPARK_HOME/sbin/start-all.sh"
+  become: yes
+  become_user: "{{ user }}"
+  run_once: yes

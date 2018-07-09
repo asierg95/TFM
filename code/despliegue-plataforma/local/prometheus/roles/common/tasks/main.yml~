@@ -1,0 +1,18 @@
+---
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  ignore_errors: True
+
+- name: Download prometheus
+  get_url:
+    url: "{{ prometheus_url }}"
+    dest: /home/{{ user }}/prometheus.tar.gz
+
+- name: Create prometheus directory
+  file:
+    path: "{{ prometheus_home }}"
+    state: directory
+
+- name: Unarchive prometheus
+  command: "mkdir {{ prometheus_home }}/prometheus && tar xvzf prometheus.tar.gz -C prometheus --strip-components 1"

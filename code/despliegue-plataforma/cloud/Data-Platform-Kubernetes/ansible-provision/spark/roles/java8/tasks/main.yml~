@@ -1,0 +1,25 @@
+---
+
+#INSTALAR JAVA 8
+
+- name: Install wget
+  yum:
+    name: wget
+    state: installed
+
+- name: Download java rpm
+  command: 'wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "{{ jdk_url }}"'
+
+- name: Install java rpm
+  yum:
+    name: /home/{{ user }}/jdk-8u60-linux-x64.rpm
+    state: present
+
+- name: Setup the dedicated user environment
+  blockinfile:
+    dest: /home/{{ user }}/.bashrc
+    block: |
+      #Java path# 
+      JAVA_HOME={{ java_home }}/
+      export PATH=$PATH:$JAVA_HOME/bin
+

@@ -1,0 +1,14 @@
+[Unit]
+Description=zkfc
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash -c "/opt/hadoop/sbin/hadoop-daemon.sh start zkfc"
+ExecStop=/bin/bash -c "/opt/hadoop/sbin/hadoop-daemon.sh stop zkfc"
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target

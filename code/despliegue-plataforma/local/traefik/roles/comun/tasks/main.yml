@@ -1,0 +1,20 @@
+---
+
+#TRAEFIK
+
+- name: Copy traefik files
+  copy: 
+    src={{ local_traefik_dir }} 
+    dest=/home/ikerlan
+
+- name: Download Traefik
+  get_url:
+    url: "{{ traefik_bin_url }}"
+    dest: "{{ traefik_bin }}"
+
+- name: Add Permissions to execute traefik
+  command: "chmod +x {{ traefik_bin }}"
+  become: True
+ 
+
+

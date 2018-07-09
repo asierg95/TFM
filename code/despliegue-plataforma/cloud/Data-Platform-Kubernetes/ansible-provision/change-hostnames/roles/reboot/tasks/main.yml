@@ -1,0 +1,29 @@
+---
+
+#REBOOT
+#Check if hostnames are already configured
+- name: Check if hostnames already configured
+  stat:
+    path: "{{ scaffolding_dir }}/hostnames_changed"
+  register: hostnames_changed_path
+
+#Reboot to apply hostnames changes
+- name: reboot host
+  command: /usr/bin/systemd-run --on-active=10 /usr/bin/systemctl reboot
+  async: 0
+  poll: 0
+  when: hostnames_changed_path.stat.exists == False
+
+- name: wait for host sshd
+  become: false 
+  local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=400 delay=60
+  when: hostnames_changed_path.stat.exists == False
+
+#Create file to know that hostnames are configured
+- name: Create file to know that hostnames has been configured
+  file: 
+    path: "{{ scaffolding_dir }}/hostnames_changed" 
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: hostnames_changed_path.stat.exists == False

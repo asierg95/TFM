@@ -1,0 +1,20 @@
+---
+      
+- name: Generate ssh key 
+  user:
+    name: "{{ user }}"
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+
+- name: Read and register ssh key
+  shell: "cat /home/{{user}}/.ssh/id_rsa.pub"
+  register: ssh_key
+
+- name: check keys (DEBUG MODE)
+  debug: msg="{{ hostvars[groups['ssh_control'][0]]['ssh_key'] }}"
+
+- name: fetch file from source servers
+  fetch:
+    src: /home/{{ user }}/.ssh/id_rsa
+    dest: /tmp

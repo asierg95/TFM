@@ -1,0 +1,15 @@
+
+---
+
+#Arrancar datanodes
+
+#Iniciar los datanodes
+- name: Iniciar datanodes
+  shell: "{{hadoop_home}}/sbin/hadoop-daemon.sh start datanode"
+  become: yes
+  become_user: "{{user}}"
+  ignore_errors: yes
+
+
+
+

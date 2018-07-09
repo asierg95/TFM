@@ -1,0 +1,118 @@
+<configuration>
+<property>
+  <name>dfs.namenode.rpc-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual address the RPC server will bind to. If this optional address is
+    set, it overrides only the hostname portion of dfs.namenode.rpc-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node listen on all interfaces by
+    setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.servicerpc-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual address the service RPC server will bind to. If this optional address is
+    set, it overrides only the hostname portion of dfs.namenode.servicerpc-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node listen on all interfaces by
+    setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.http-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual adress the HTTP server will bind to. If this optional address
+    is set, it overrides only the hostname portion of dfs.namenode.http-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node HTTP server listen on all
+    interfaces by setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.https-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual adress the HTTPS server will bind to. If this optional address
+    is set, it overrides only the hostname portion of dfs.namenode.https-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node HTTPS server listen on all
+    interfaces by setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.replication</name>
+  <value>{{ dfs_replication }}</value>
+ </property>
+ <property>
+  <name>dfs.name.dir</name>
+  <value>file://{{ dfs_name_dir }}</value>
+ </property>
+ <property>
+  <name>dfs.data.dir</name>
+  <value>file://{{ dfs_data_dir }}</value>
+ </property>
+ <property>
+  <name>dfs.permissions</name>
+  <value>false</value>
+ </property>
+ <property>
+  <name>dfs.nameservices</name>
+  <value>{{ hdfs_cluster_name }}</value>
+ </property>
+ <property>
+  <name>dfs.ha.namenodes.{{ hdfs_cluster_name }}</name>
+  <value>{% for host in groups['masters_public'] %}{{ hostvars[host]['ansible_hostname'] }}{% if not loop.last %},{% endif %}{% endfor %}</value>
+ </property>
+{% for host in groups['masters_public'] %}
+  <property>
+    <name>dfs.namenode.rpc-address.{{ hdfs_cluster_name }}.{{ hostvars[host]['ansible_hostname'] }}</name>
+    <value>{{ hostvars[host]['ansible_fqdn'] }}:8020</value>
+  </property>
+  <property>
+    <name>dfs.namenode.http-address.{{ hdfs_cluster_name }}.{{ hostvars[host]['ansible_hostname'] }}</name>
+    <value>{{ hostvars[host]['ansible_fqdn'] }}:50070</value>
+  </property>
+{% endfor %}
+ <property>
+  <name>dfs.namenode.shared.edits.dir</name>
+  <value>qjournal://{% for host in groups['masters_public'] %}{{ hostvars[host]['ansible_fqdn'] }}:8485{% if not loop.last %};{% endif %}{% endfor %}/{{ hdfs_cluster_name }}</value>
+ </property>
+ <property>
+  <name>dfs.journalnode.edits.dir</name>
+  <value>{{ dfs_journalnode_edits_dir }}</value>
+ </property>
+<property>
+  <name>dfs.ha.fencing.methods</name>
+  <value>shell(/bin/true)</value>
+</property>
+<property>
+  <name>dfs.ha.fencing.ssh.private-key-files</name>
+  <value>{{ ssh_keys_path }}</value>
+ </property>
+ <property>
+  <name>dfs.ha.automatic-failover.enabled.{{ hdfs_cluster_name }}</name>
+  <value>true</value>
+ </property>
+
+ <property>
+   <name>ha.zookeeper.quorum</name>
+   <value>{% for host in groups['masters_public'] %}{{ hostvars[host]['ansible_fqdn'] }}:2181{% if not loop.last %},{% endif %}{% endfor %}</value>
+ </property>
+
+<property>
+ <name>dfs.client.failover.proxy.provider.{{ hdfs_cluster_name }}</name>
+ <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+<property>
+ <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+ <value>false</value>
+</property>
+</configuration>

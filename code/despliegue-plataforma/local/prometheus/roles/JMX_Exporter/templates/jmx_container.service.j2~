@@ -1,0 +1,12 @@
+[Unit]
+Description=JMX container
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run -p {{ http_host_port }}:8080 -e "JMX_PORT={{ jmx_port }}" -e "JMX_HOST={{ jmx_host }}" -e "HTTP_PORT=8080" -e "JMX_EXPORTER_CONFIG_FILE=kafka.yml" -i {{ jmx_docker_image }}
+ExecStop=/usr/bin/docker stop {{ jmx_docker_image }}
+
+[Install]
+WantedBy=default.target

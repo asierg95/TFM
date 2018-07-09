@@ -1,0 +1,31 @@
+---
+
+# Check if Kubeadm is initialized
+- name: Check if the master has been initialized
+  stat:
+    path: "{{ scaffolding_dir }}/kubeadm_initiliazed"
+  register: kubeadm_initiliazed
+
+- name: Kubeadm init with network
+  command: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
+  when: kubeadm_initiliazed.stat.exists == False
+
+- name: Create file to know that kubeadm has been initiliazed
+  file: 
+    dest: "{{ scaffolding_dir }}/kubeadm_initiliazed"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: kubeadm_initiliazed.stat.exists == False
+
+#Make kubectl work for non-root user
+- name: Creates directory
+  file: path={{ user_home }}/.kube state=directory
+
+- name: Copy kubernetes admin.conf file to kubernetes config directory
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ user_home }}/.kube/config"
+    remote_src: yes
+    owner: "{{ user }}"
+    group: "{{ group }}"

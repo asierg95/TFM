@@ -1,0 +1,25 @@
+---
+
+- name: Copy JMX docker files
+  copy: 
+    src={{ local_jmx_files_dir }}/
+    dest="/home/{{ user }}"
+  become: true
+  become_user: "{{ user }}"
+
+- name: Permissions to entrypoint.sh file
+  command: "sudo chmod +777 entrypoint.sh"
+  
+- name: Build Docker image
+  command: sudo docker build -t jmx_exporter .
+
+- name: jmx docker container service
+  template: 
+    src=jmx_container.service.j2
+    dest="{{ services_directory }}/{{ jmx_docker_service }}"
+
+- name: Start/Enable jmx service 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ jmx_docker_service }}"

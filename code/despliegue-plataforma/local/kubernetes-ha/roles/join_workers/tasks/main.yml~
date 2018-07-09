@@ -1,0 +1,42 @@
+---
+
+# Configuracion COMUN
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  ignore_errors: True
+
+- name: Download Hadoop
+  get_url: url={{ hadoop_url }} dest={{ hadoop_home }}.tar.gz validate_certs=False
+
+- name: Unzip Hadoop
+  command: "{{ item }}"
+  with_items:
+  - tar xzf {{ hadoop_home }}.tar.gz
+  - mv {{ hadoop_version }} {{ hadoop_home }}
+
+- name: Setup the dedicated user environment
+  blockinfile:
+    dest: /home/{{ user }}/.bashrc
+    block: |
+      #Hadoop path# 
+      HADOOP_PREFIX={{ hadoop_home }}/
+      export PATH=$PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin
+      #Native path#
+      export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_PREFIX}/lib/native
+      export HADOOP_OPTS="-Djava.library.path=$HADOOP_PREFIX/lib/native"
+
+- name: create Hadoop log directory 
+  file: path={{ hadoop_log_dir }} state=directory mode=0755 owner={{ user }}
+
+- name: Add java_home to hadoop-env.sh file
+  lineinfile: dest={{ hadoop_home }}/etc/hadoop/hadoop-env.sh line="export JAVA_HOME={{ java_home }}/" insertafter="{JAVA_HOME}"
+
+- name: Add hadoop_log_path to hadoop-env.sh file
+  lineinfile: dest={{ hadoop_home }}/etc/hadoop/hadoop-env.sh line="export HADOOP_LOG_DIR=/var/log/hadoop/" insertafter="HADOOP_HOME/logs by default."
+
+- name: Copy core-site.xml
+  template: src=core-site.xml.j2 dest={{ hadoop_home }}/etc/hadoop/core-site.xml
+
+- name: Copy hdfs-site.xml
+  template: src=hdfs-site.xml.j2 dest={{ hadoop_home }}/etc/hadoop/hdfs-site.xml

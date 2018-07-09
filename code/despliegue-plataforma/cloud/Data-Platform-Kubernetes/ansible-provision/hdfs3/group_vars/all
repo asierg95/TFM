@@ -1,0 +1,70 @@
+---
+
+#MACHINES CONFIGS#
+
+user: centos
+group: centos
+
+ssh_keys_path: /home/{{ user }}/.ssh/id_rsa
+
+#ANSIBLE CONFIG
+scaffolding_dir: /tmp
+
+
+#HDFS
+hdfs_cluster_name: ikerlan-ha-cluster
+dfs_replication: 3
+dfs_name_dir: /hdfs/name
+dfs_data_dir: /hdfs/data
+dfs_journalnode_edits_dir: /hdfs/journalnode
+
+#Services
+services_directory: /etc/systemd/system
+
+zkfc_service: zkfc.service
+zookeeper_service: zookeeper.service
+journalnode_service: journalnode.service
+namenode_service: namenode.service
+datanode_service: datanode.service
+
+#Scripts
+scripts_dir: /home/{{ user }}/hdfs_scripts
+journalnode_start_script: "{{ scripts_dir }}/journalnode_start.sh"
+journalnode_stop_script: "{{ scripts_dir }}/journalnode_stop.sh"
+
+namenode_start_script: "{{ scripts_dir }}/namenode_start.sh"
+namenode_stop_script: "{{ scripts_dir }}/namenode_stop.sh"
+
+zkfc_start_script: "{{ scripts_dir }}/zkfc_start.sh"
+zkfc_stop_script: "{{ scripts_dir }}/zkfc_stop.sh"
+
+datanode_start_script: "{{ scripts_dir }}/datanode_start.sh"
+datanode_stop_script: "{{ scripts_dir }}/datanode_stop.sh"
+
+#VERSIONS#
+hadoop_version: hadoop-3.0.2
+zookeeper_version: zookeeper-3.4.12
+
+
+#HADOOP CONFIGURATION#
+hadoop_directory: /opt
+hadoop_home: "{{ hadoop_directory }}/hadoop"
+hadoop_log_dir: /var/log/hadoop
+hdfs_data_dir: /hdfs/data
+hdfs_name_dir: /hdfs/name
+hdfs_journal_dir: /hdfs/journal
+
+#ZOOKEEPER CONFIGURATION#
+zookeeper_directory: /usr/local
+zookeeper_home: "{{ zookeeper_directory }}/zookeeper"
+zookeeper_data_dir: /var/lib/zookeeper
+
+#JAVA CONFIGURATION#
+jdk_version: 8u171
+jdk_release: jdk-8u171-linux-x64
+java_home: /usr/java/jdk1.8.0_171-amd64/jre
+
+#DOWNLOAD URLs#
+hadoop_url: https://www.apache.org/dist/hadoop/core/{{hadoop_version}}/{{hadoop_version}}.tar.gz
+zookeeper_url: http://www.apache.org/dist/zookeeper/{{ zookeeper_version }}/{{ zookeeper_version }}.tar.gz
+jdk_url: http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.rpm

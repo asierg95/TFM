@@ -1,0 +1,74 @@
+---
+# HDFS
+
+- hosts: namenodes:datanodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: comun
+
+- hosts: namenodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: namenode
+
+- hosts: datanodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: datanode
+
+- hosts: namenodes:datanodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: java8
+
+- hosts: namenodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: zookeeper
+
+- hosts: namenodes
+  remote_user: "{{user}}"
+  become: True
+  serial: 1
+  roles:
+  - role: haStateJournal
+
+- hosts: namenodes
+  remote_user: "{{user}}"
+  become: True
+  serial: 1
+  roles:
+  - role: start-namenodes
+
+- hosts: namenodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: start-zkfc
+
+- hosts: datanodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: start-datanodes
+
+- hosts: namenodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: zookeeper_service
+
+

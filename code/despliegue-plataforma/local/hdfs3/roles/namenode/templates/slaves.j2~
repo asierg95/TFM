@@ -1,0 +1,4 @@
+{% for ip in groups['datanodes'] %}
+{{ip}}
+{% endfor %}
+

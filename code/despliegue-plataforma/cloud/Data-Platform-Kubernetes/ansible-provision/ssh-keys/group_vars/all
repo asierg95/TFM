@@ -1,0 +1,6 @@
+---
+
+user: centos
+
+ssh_config_file: /etc/ssh/ssh_config
+

@@ -1,0 +1,10 @@
+---
+
+# Keepalived Installation
+
+- name: Install haproxy
+  yum: name=haproxy state=installed
+
+#Copy haproxy configuration
+- name: Copy haproxy config
+  template: src=haproxy.cfg.j2 dest={{ haproxy_home }}/haproxy.cfg

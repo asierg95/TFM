@@ -1,0 +1,17 @@
+{
+{% for ip in groups['servidor1'] %}
+   "bind_addr":"{{ip}}",
+"client_addr":"{{ip}}",
+{% endfor %}
+    "bootstrap": false,
+    "server": true,
+    "datacenter": "{{ datacenter }}",
+    "data_dir": "/var/consul",
+    "ui_dir": "/home/{{ usuario }}/dist",
+    "log_level": "WARN",
+    "encrypt": "{{hostvars[groups["servidores"][0]].consul_keygen.stdout }}",
+    "enable_syslog": true,
+    "retry_join": [{% for ip in groups['servidor2'] %}"{{ip}}",{% endfor %}{% for ip in groups['servidor3'] %}"{{ip}}"{% endfor %}],
+"bootstrap_expect": {{ cantidad_servers }}
+}
+

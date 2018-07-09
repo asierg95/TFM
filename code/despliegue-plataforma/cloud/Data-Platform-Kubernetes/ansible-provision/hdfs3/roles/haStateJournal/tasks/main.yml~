@@ -1,0 +1,21 @@
+
+---
+
+#Arrancar HDFS
+
+#Inicializar el estado de zookeeper HA en el namenode1 
+- name: ZKFC format
+  command: "{{hadoop_home}}/bin/hdfs zkfc -formatZK"
+  become: yes
+  become_user: "{{user}}"
+  run_once: yes
+  ignore_errors: yes
+  when: ansible_hostname == "{{ namenode1_hostnameOnly }}"
+
+#Iniciar todos los journalnodes
+- name: iniciar journalnode
+  shell: "{{hadoop_home}}/sbin/hadoop-daemon.sh start journalnode"
+  become: yes
+  become_user: "{{user}}"
+  ignore_errors: yes
+

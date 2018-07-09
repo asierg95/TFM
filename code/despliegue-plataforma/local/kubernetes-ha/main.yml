@@ -1,0 +1,66 @@
+---
+# Kubernetes
+
+- hosts: masters:workers
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: update_hosts
+  - role: docker
+  - role: common
+  - role: update_hosts
+  - role: disable_swap
+
+- hosts: loadBalancer
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: haproxy
+
+- hosts: masters
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: etcd
+  - role: keepalived
+
+- hosts: masters
+  remote_user: "{{ user }}"
+  become: True
+  serial: "1"
+  roles:
+  - role: initialize_masters
+
+- hosts: masters[0]
+  remote_user: "{{ user }}"
+  become: False
+  serial: "100%"
+  roles:
+  - role: calico_network
+
+- hosts: masters[0]
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: register_kubeadm_join
+
+- hosts: workers
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: join_workers
+
+- hosts: masters[0]
+  remote_user: "{{ user }}"
+  become: False
+  serial: "100%"
+  roles:
+  - role: dashboard
+
+
+

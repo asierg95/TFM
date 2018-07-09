@@ -1,0 +1,39 @@
+---
+
+#INSTALL JAVA 8
+
+- name: Check if the version of java already exists
+  stat:
+    path: "{{ java_home }}"
+  register: java_install_path
+
+- name: Install wget
+  yum:
+    name: wget
+    state: installed
+  when: java_install_path.stat.exists == False
+
+- name: Download java rpm
+  command: 'wget --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" "{{ jdk_url }}"'
+  when: java_install_path.stat.exists == False
+
+- name: Download Hadoop
+  get_url: url={{ hadoop_url }} dest={{ hadoop_home }}.tar.gz validate_certs=False
+  when: java_install_path.stat.exists == False
+
+- name: Install java rpm
+  yum:
+    name: /home/{{ user }}/{{ jdk_release }}.rpm
+    state: present
+  when: java_install_path.stat.exists == False
+
+- name: Setup the dedicated user environment
+  blockinfile:
+    dest: /home/{{ user }}/.bashrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK Java"
+    block: |
+      #Java path# 
+      JAVA_HOME={{ java_home }}/
+      export PATH=$PATH:$JAVA_HOME/bin
+  when: java_install_path.stat.exists == False
+

@@ -1,0 +1,77 @@
+
+---
+
+#Arrancar HDFS
+
+#Get current public IP
+- name: get public IP
+  ipify_facts:
+  register: public_ip
+
+#Initialize zookeeper HA state on namenode1 
+
+- name: Check if the ZKFC has been formated
+  stat:
+    path: "{{ scaffolding_dir }}/zkfc_formatted"
+  register: zkfc_formatted_path
+
+- name: ZKFC format
+  command: "{{ hadoop_home }}/bin/hdfs zkfc -formatZK"
+  become: yes
+  become_user: "{{ user }}"
+  run_once: yes
+  when: (ipify_public_ip == groups[group_names | first] | first) and (zkfc_formatted_path.stat.exists == False)
+
+- name: Create file to know that ZKFC format has been executed
+  file: 
+    path: "{{ scaffolding_dir }}/zkfc_formatted" 
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: (ipify_public_ip == groups[group_names | first] | first) and (zkfc_formatted_path.stat.exists == False)
+
+#Journalnode Start script
+- name: Check if the journalnode start_script exists
+  stat:
+    path: "{{ journalnode_start_script }}"
+  register: journalnode_start_script_path
+
+- name: Copy journalnode_start.sh
+  template: src=journalnode_start.sh dest={{ journalnode_start_script }}
+  when: journalnode_start_script_path.stat.exists == False
+
+- name: Changing perm of "journalnode_start.sh", adding "+x"
+  file: dest={{ journalnode_start_script }} mode=a+x
+
+#Journalnode Stop script
+- name: Check if the journalnode stop_script exists
+  stat:
+    path: "{{ journalnode_stop_script }}"
+  register: journalnode_stop_script_path
+
+- name: Copy journalnode_stop.sh
+  template: src=journalnode_stop.sh dest={{ journalnode_stop_script }}
+  when: journalnode_stop_script_path.stat.exists == False
+
+- name: Changing perm of "journalnode_stop.sh", adding "+x"
+  file: dest={{ journalnode_stop_script }} mode=a+x
+
+#Journalnode service
+- name: Check if the journalnode service exists
+  stat:
+    path: "{{ services_directory }}/{{ journalnode_service }}"
+  register: journalnode_service_path
+
+- name: Create journalnode service
+  template: src=journalnode.service dest={{ services_directory }}/{{ journalnode_service }}
+  when: journalnode_service_path.stat.exists == False
+
+- name: Start/Enable journalnode service 
+  systemd:
+    daemon_reload: yes
+    state: started
+    name: "{{ journalnode_service }}"
+  when: journalnode_service_path.stat.exists == False
+
+
+

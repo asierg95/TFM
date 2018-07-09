@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: kafka-service
+  name: kafka-service
+spec:
+  ports:
+    - port: 9092
+      nodePort: 31092
+      name: kafka-service-port
+    - port: 2181
+      nodePort: 32181
+      name: zookeeper-kafka-service-port
+  selector:
+    app: kafka-tfm
+  type: NodePort

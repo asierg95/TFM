@@ -1,0 +1,45 @@
+---
+
+user: centos
+group: centos
+
+#ANSIBLE CONFIG
+scaffolding_dir: /tmp
+
+user_home: /home/{{ user }}
+
+#KUBERNETES INSTALLATION
+yum_repos: /etc/yum.repos.d
+
+
+#KUBERNETES CONFIGS
+pod_network_cidr: 192.168.0.0/16
+kubernetes_config_yaml_path: /home/{{ user }}/config.yaml
+kubernetes_certs: /etc/kubernetes/pki
+
+
+#ETCD
+etcd_version: v3.2.17
+etcd_download_dir: /opt/etcd-{{ etcd_version }}-linux-amd64.tar.gz
+etcd_home: /opt/etcd
+
+#Services
+services_directory: /etc/systemd/system
+etcd_service: etcd.service
+
+#KEEPALIVED
+interface: eth0
+leader_priority: 101
+masters_priority: 100
+virtual_ip: "{{ groups['bastion'][0] }}"
+keepalived_home: /etc/keepalived
+
+#HAPROXY
+haproxy_home: /etc/haproxy
+
+
+#DOWNLOAD URLs#
+calico_rback_url: https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
+calico_url: https://docs.projectcalico.org/v3.1/getting-started/kubernetes/installation/hosted/kubernetes-datastore/calico-networking/1.7/calico.yaml
+dashboard_url: https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+etcd_url: https://github.com/coreos/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz

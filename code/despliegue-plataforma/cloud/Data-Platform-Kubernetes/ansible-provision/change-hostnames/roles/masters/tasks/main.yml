@@ -1,0 +1,25 @@
+---
+
+#MASTERS HOSTNAMES
+
+- name: Check if hostnames already configured
+  stat:
+    path: "{{ scaffolding_dir }}/hostnames_changed"
+  register: hostnames_changed_path
+
+- name: Change instance name in /etc/hostname
+  template: src=hostname.j2 dest=/etc/hostname
+  when: hostnames_changed_path.stat.exists == False
+
+- name: Add static hostname
+  command: "hostnamectl set-hostname {{ nombre_servers }}{{ groups['masters_public'].index(inventory_hostname)+1 }} --static"
+  when: hostnames_changed_path.stat.exists == False
+
+- name: fichero hosts
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: Preserve hostname
+  blockinfile:
+    dest: /etc/cloud/cloud.cfg
+    block: |
+      preserve_hostname: true

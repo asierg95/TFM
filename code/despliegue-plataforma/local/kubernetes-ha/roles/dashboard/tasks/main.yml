@@ -1,0 +1,26 @@
+---
+
+# Kubernetes Dashboard installation
+
+- name: kubectl install kubernetes-dashboard
+  command: kubectl apply -f {{ dashboard_url }}
+
+- name: Copy dashboard-admin.yaml
+  template: src=dashboard-admin.yaml.j2 dest=/home/{{ user }}/dashboard-admin.yaml
+
+- name: Check if the dashboard admin user has been created
+  stat:
+    path: "{{ scaffolding_dir }}/dashboard_admin_user"
+  register: dashboard_admin_user
+
+- name: kubectl create dashboard admin user
+  command: kubectl create -f /home/{{ user }}/dashboard-admin.yaml
+  when: dashboard_admin_user.stat.exists == False
+
+- name: Create file to know that kubectl dashboard admin user has been created
+  file: 
+    dest: "{{ scaffolding_dir }}/dashboard_admin_user"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: dashboard_admin_user.stat.exists == False

@@ -1,0 +1,26 @@
+---
+
+#NAMENODES
+
+# Create Namenode directory
+- name: Check if namenode directory already exists
+  stat:
+    path: "{{ hdfs_name_dir }}"
+  register: hdfs_name_path
+
+- name: Add Namenode directory
+  file: path={{ hdfs_name_dir }} state=directory mode=0755 owner={{ user }}
+  when: hdfs_name_path.stat.exists == False
+
+# Create Journalnode directory
+- name: Check if journalnode directory already exists
+  stat:
+    path: "{{ hdfs_journal_dir }}"
+  register: hdfs_journal_path
+
+- name: Add journalnode directory
+  file: path={{ hdfs_journal_dir }} state=directory mode=0755 owner={{ user }}
+  when: hdfs_journal_path.stat.exists == False
+
+- name: Add slaves definition file
+  template: src=slaves.j2 dest={{ hadoop_home }}/etc/hadoop/slaves

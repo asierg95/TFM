@@ -1,0 +1,13 @@
+
+---
+
+- name: deploy key to other nodes
+  blockinfile:
+    dest: /home/{{ user }}/.ssh/authorized_keys
+    block: |
+      {{ hostvars[groups['ssh_control'][0]]['ssh_key'].stdout }}
+
+- name: copy the paired files to the right servers
+  copy:
+    src: "/tmp/{{ ssh_control }}/home/{{ user }}/.ssh/id_rsa"
+    dest: /home/{{ user }}/.ssh/id_rsa

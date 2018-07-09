@@ -1,0 +1,16 @@
+---
+
+user: centos
+
+openVPNServer_url: http://swupdate.openvpn.org/as/openvpn-as-2.1.4-CentOS7.x86_64.rpm
+VPN_home: /home/{{ user }}/openvpn.rpm
+
+openvpn_user: openvpn
+openvpn_encrypted_password: $6$IK3RL@N$NEQ153c9fuGlfehUKpnnz90N7x2dgfPIlyxaDjvtbygtyBp/qn130U8PTDhC/2EoCulNgSAypYucaj644beE11
+
+
+
+#Generate encrypted password:
+#python
+#>>> import crypt
+#>>> crypt.crypt('ikerlanopenvpn', '$6$IK3RL@N')

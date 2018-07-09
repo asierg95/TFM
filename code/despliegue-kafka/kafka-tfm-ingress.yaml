@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kafka-ingress
+spec:
+  rules:
+  -host: kafka.ikcloud.es
+  http:
+    paths:
+    - path: /
+    backend:
+      serviceName: kafka-service
+      servicePort: 9092

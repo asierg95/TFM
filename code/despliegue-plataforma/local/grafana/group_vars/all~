@@ -1,0 +1,14 @@
+---
+
+#MACHINES CONFIGS#
+
+user: ikerlan
+
+
+#HOMES#
+yum_repos_path: /etc/yum.repos.d
+grafana_repo_path: "{{ yum_repos_path }}/grafana.repo"
+
+#DOWNLOAD URLs#
+prometheus_url: https://github.com/prometheus/prometheus/releases/download/v1.5.2/prometheus-1.5.2.linux-amd64.tar.gz
+node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v0.14.0/node_exporter-0.14.0.linux-amd64.tar.gz

@@ -1,0 +1,30 @@
+---
+
+#Get current public IP
+- name: get public IP
+  ipify_facts:
+  register: public_ip
+
+# Keepalived Installation
+
+- name: Install keepalived
+  yum: name=keepalived state=installed
+
+# Copy keepalived config
+- name: Copy keepalived-leader.config
+  template: src=leader-keepalived.conf.j2 dest={{ keepalived_home }}/keepalived.conf
+  when: (ipify_public_ip == groups[group_names | first] | first)
+
+- name: Copy keepalived-master.config
+  template: src=masters-keepalived.conf.j2 dest={{ keepalived_home }}/keepalived.conf 
+  when: (ipify_public_ip == groups[group_names | first] | first)
+
+#Copy check apiserver
+- name: Copy check_apiserver script
+  template: src=check_apiserver.sh.j2 dest={{ keepalived_home }}/check_apiserver.sh
+
+- name: Restart Keepalived 
+  systemd:
+    name: keepalived
+    state: restarted
+    enabled: true

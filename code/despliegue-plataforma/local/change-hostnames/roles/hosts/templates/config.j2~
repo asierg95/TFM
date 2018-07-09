@@ -1,0 +1,12 @@
+{
+    "bind_addr":{% for ip in groups['comun'] %}
+"{{ip}}",
+{% endfor %}
+    "server": false,
+    "datacenter": "nyc2",
+    "data_dir": "/var/consul",
+    "ui_dir": "/home/{{ user }}/dist",
+    "log_level": "INFO",
+    "enable_syslog": true,
+    "start_join": [{% for ip in groups['servidor1'] %}"{{ip}}",{% endfor %}{% for ip in groups['servidor2'] %}"{{ip}}",{% endfor %}{% for ip in groups['servidor3'] %}"{{ip}}"{% endfor %}]
+}

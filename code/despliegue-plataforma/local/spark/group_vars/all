@@ -1,0 +1,33 @@
+---
+
+#MACHINES CONFIGS#
+
+user: ikerlan
+
+#SPARK METRICS
+prometheus_pushgateway_address: "172.16.8.230:9091"
+
+#SPARK ENVIRONMENTS
+spark_master_webui_port: 9090
+
+#VERSIONS#
+scala_version: scala-2.11.8
+spark_version: spark-2.3.0
+spark_release: spark-2.3.0-bin-hadoop2.7
+
+jdk_version: 8u171
+jdk_subversion: b11
+jdk_tarball_hash: 512cd62ec5174c3487ac17c61aaa89e8
+jdk_release: jdk-{{ jdk_version }}-linux-x64
+
+
+
+#HOMES#
+spark_home: /opt/spark
+spark_log_path: "{{ spark_home }}/logs"
+java_home: /usr/java/jdk1.8.0_171/jre
+
+#DOWNLOAD URLs#
+scala_url: http://www.scala-lang.org/files/archive/{{ scala_version }}.rpm
+spark_url: http://mirror.cc.columbia.edu/pub/software/apache/spark/{{ spark_version }}/{{ spark_release }}.tgz
+jdk_url: http://download.oracle.com/otn-pub/java/jdk/{{ jdk_version }}-{{ jdk_subversion }}/{{ jdk_tarball_hash }}/{{ jdk_release }}.rpm

@@ -1,0 +1,41 @@
+---
+
+#ZOOKEEPERS
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  ignore_errors: True
+
+- name: Create home directory
+  file: path={{ zookeeper_home }} state=directory mode=0755
+
+- name: Change zookeeper home owner recursive
+  command: "chown -R {{user}}:{{group}} {{ zookeeper_home }}"
+
+- name: Create data directory
+  file: path={{ zookeeper_data_dir }} state=directory mode=0755
+
+- name: Change zookeeper dataDir owner recursive
+  command: "chown -R ikerlan:ikerlan {{ zookeeper_data_dir }}"
+
+- name: Copy myid file
+  template: src=myid.j2 dest={{ zookeeper_data_dir }}/myid
+  become: yes
+  become_user: "{{user}}"
+
+- name: Download zookeeper
+  get_url:
+    url: "{{ zookeeper_url }}"
+    dest: "{{ zookeeper_home }}.tar.gz"
+
+- name: Unpack zookeeper
+  command: "{{ item }}"
+  with_items:
+  - tar xzf {{ zookeeper_home }}.tar.gz
+  - mv -vn {{ zookeeper_version }} {{ zookeeper_home }}
+
+- name: Copy zoo.cfg file
+  template: src=zoo.cfg.j2 dest={{ zookeeper_home }}/{{ zookeeper_version }}/conf/zoo.cfg
+
+- name: Start zookeeper
+  command: "{{ zookeeper_home }}/{{ zookeeper_version }}/bin/zkServer.sh start"

@@ -1,0 +1,25 @@
+---
+
+#MACHINES CONFIGS#
+
+user: centos
+
+#SPARK ENVIRONMENTS
+spark_master_webui_port: 9090
+
+#VERSIONS#
+scala_version: scala-2.11.8
+spark_version: spark-2.3.0
+spark_release: spark-2.3.0-bin-hadoop2.7
+jdk_release: jdk-8u171-linux-x64
+
+
+#HOMES#
+spark_home: /opt/spark
+java_home: /usr/java/jdk1.8.0_161/jre
+spark_log_path: "{{ spark_home }}/logs"
+
+#DOWNLOAD URLs#
+scala_url: "http://www.scala-lang.org/files/archive/{{ scala_version }}.rpm"
+spark_url: "http://mirror.cc.columbia.edu/pub/software/apache/spark/{{ spark_version }}/{{ spark_release }}.tgz"
+jdk_url: http://download.oracle.com/otn-pub/java/jdk/8u171-b11/512cd62ec5174c3487ac17c61aaa89e8/jdk-8u171-linux-x64.rpm

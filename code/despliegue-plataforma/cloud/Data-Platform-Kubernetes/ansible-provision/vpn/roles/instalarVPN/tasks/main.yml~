@@ -1,0 +1,10 @@
+---
+
+- name: Download openVPNServer
+  get_url: url={{ openVPNServer_url }} dest={{ VPN_home }} validate_certs=False
+ 
+- name: Install OpenVPN
+  shell: rpm -Uvh openvpn.rpm
+
+- name: change openvpn password
+  user: name={{ openvpn_user }} state=present password={{ openvpn_encrypted_password }} shell=/bin/bash

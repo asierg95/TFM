@@ -1,0 +1,12 @@
+---
+
+#TRAEFIK
+
+- name: Copy traefik.service
+  template: src=traefik.service dest=/etc/systemd/system/traefik.service
+
+- name: Restart systemctl dameon 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: traefik

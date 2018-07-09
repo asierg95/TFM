@@ -1,0 +1,6 @@
+---
+
+#COPIA FICHERO HOSTS
+
+- name: fichero hosts
+  template: src=hosts.j2 dest=/etc/hosts

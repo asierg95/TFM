@@ -1,0 +1,7 @@
+---
+
+#Aqui se inicializaran las variables
+
+configureNAT_home: /usr/local/sbin/configure-pat.sh
+rclocal_path: /etc/rc.local
+

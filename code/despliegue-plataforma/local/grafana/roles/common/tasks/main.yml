@@ -1,0 +1,25 @@
+---
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  ignore_errors: True
+
+- name: Grafana repo
+  template: 
+    src=grafana.repo.j2 
+    dest={{ grafana_repo_path }}
+
+- name: install Grafana
+  yum:
+    name: grafana
+    state: latest
+
+- name: Create genconf directory
+  file: path=/var/run/grafana/ state=directory owner={{ user }} mode=0777
+
+- name: Start/Enable grafana service 
+  systemd:
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
+    name: grafana-server

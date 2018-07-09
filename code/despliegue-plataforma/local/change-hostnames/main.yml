@@ -1,0 +1,27 @@
+---
+
+#MASTER & SLAVES
+
+- hosts: masters
+  remote_user: "{{usuario}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: masters
+
+- hosts: slaves
+  remote_user: "{{usuario}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: slaves
+
+- hosts: masters:slaves
+  remote_user: "{{usuario}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: hosts
+
+
+

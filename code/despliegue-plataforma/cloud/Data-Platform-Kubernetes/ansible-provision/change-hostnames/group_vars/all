@@ -1,0 +1,10 @@
+---
+
+user: centos
+
+nombre_servers: master
+nombre_clientes: slave
+
+#ANSIBLE CONFIG
+scaffolding_dir: /tmp
+

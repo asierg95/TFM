@@ -1,0 +1,10 @@
+---
+
+#MACHINES CONFIGS#
+
+user: ikerlan
+
+
+#HOMES#
+yum_repos_path: /etc/yum.repos.d
+grafana_repo_path: "{{ yum_repos_path }}/grafana.repo"

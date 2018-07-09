@@ -1,0 +1,17 @@
+---
+
+#CRON: Synchronize jobs CentOS
+
+- name: Add NTP job
+  cron:
+    name: "Synchronize NTP"
+    month: "{{ month }}"
+    weekday: "{{ weekday }}"
+    day: "{{ day }}"
+    hour: "{{ hour }}"
+    minute: "{{ minute }}"   
+    job: "{{ cron_ntp_job }}"
+#¡    state: absent
+# state: absent to remove the cron job
+
+

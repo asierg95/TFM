@@ -1,0 +1,118 @@
+<configuration>
+<property>
+  <name>dfs.namenode.rpc-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual address the RPC server will bind to. If this optional address is
+    set, it overrides only the hostname portion of dfs.namenode.rpc-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node listen on all interfaces by
+    setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.servicerpc-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual address the service RPC server will bind to. If this optional address is
+    set, it overrides only the hostname portion of dfs.namenode.servicerpc-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node listen on all interfaces by
+    setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.http-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual adress the HTTP server will bind to. If this optional address
+    is set, it overrides only the hostname portion of dfs.namenode.http-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node HTTP server listen on all
+    interfaces by setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.namenode.https-bind-host</name>
+  <value>0.0.0.0</value>
+  <description>
+    The actual adress the HTTPS server will bind to. If this optional address
+    is set, it overrides only the hostname portion of dfs.namenode.https-address.
+    It can also be specified per name node or name service for HA/Federation.
+    This is useful for making the name node HTTPS server listen on all
+    interfaces by setting it to 0.0.0.0.
+  </description>
+</property>
+
+<property>
+  <name>dfs.replication</name>
+  <value>2</value>
+ </property>
+ <property>
+  <name>dfs.name.dir</name>
+  <value>file:///hdfs/name</value>
+ </property>
+ <property>
+  <name>dfs.data.dir</name>
+  <value>file:///hdfs/data</value>
+ </property>
+ <property>
+  <name>dfs.permissions</name>
+  <value>false</value>
+ </property>
+ <property>
+  <name>dfs.nameservices</name>
+  <value>auto-ha</value>
+ </property>
+ <property>
+  <name>dfs.ha.namenodes.auto-ha</name>
+  <value>nn01,nn02</value>
+ </property>
+ <property>
+  <name>dfs.namenode.rpc-address.auto-ha.nn01</name>
+  <value>172.16.8.161:8020</value>
+</property>
+ <property>
+  <name>dfs.namenode.http-address.auto-ha.nn01</name>
+  <value>172.16.8.161:50070</value>
+ </property>
+ <property>
+  <name>dfs.namenode.rpc-address.auto-ha.nn02</name>
+  <value>172.16.8.162:8020</value>
+ </property>
+ <property>
+  <name>dfs.namenode.http-address.auto-ha.nn02</name>
+  <value>172.16.8.162:50070</value>
+ </property>
+ <property>
+  <name>dfs.namenode.shared.edits.dir</name>
+  <value>qjournal://172.16.8.161:8485;172.16.8.162:8485;172.16.8.163:8485/auto-ha</value>
+ </property>
+ <property>
+  <name>dfs.journalnode.edits.dir</name>
+  <value>/hdfs/journalnode</value>
+ </property>
+ <property>
+  <name>dfs.ha.fencing.methods</name>
+  <value>sshfence</value>
+ </property>
+<property>
+  <name>dfs.ha.fencing.ssh.private-key-files</name>
+  <value>/home/ikerlan/.ssh/id_rsa</value>
+ </property>
+ <property>
+  <name>dfs.ha.automatic-failover.enabled.auto-ha</name>
+  <value>true</value>
+ </property>
+ <property>
+   <name>ha.zookeeper.quorum</name>
+   <value>172.16.8.161:2181,172.16.8.162:2181,172.16.8.163:2181</value>
+ </property>
+<property>
+ <name>dfs.client.failover.proxy.provider.auto-ha</name>
+ <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+</property>
+</configuration>

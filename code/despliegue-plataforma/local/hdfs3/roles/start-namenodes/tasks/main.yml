@@ -1,0 +1,102 @@
+
+---
+
+#Arrancar HDFS
+
+#Initialize namenode1
+- name: Check if the namenode1 has been already formated
+  stat:
+    path: "{{ scaffolding_dir }}/namenode1_formatted"
+  register: namenode1_formatted_path
+
+- name: Format namenode
+  command: "{{hadoop_home}}/bin/hdfs namenode -format"
+  become: yes
+  become_user: "{{user}}"
+  run_once: yes
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first) and (namenode1_formatted_path.stat.exists == False)
+
+- name: Create file to know that namenode1 format has been executed
+  file: 
+    dest: "{{ scaffolding_dir }}/namenode1_formatted"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first) and (namenode1_formatted_path.stat.exists == False)
+
+#Namenode Start script
+- name: Check if the namenode start_script exists
+  stat:
+    path: "{{ namenode_start_script }}"
+  register: namenode_start_script_path
+
+- name: Copy namenode_start.sh
+  template: src=namenode_start.sh dest={{ namenode_start_script }}
+  when: namenode_start_script_path.stat.exists == False
+
+- name: Changing perm of "namenode_start.sh", adding "+x"
+  file: dest={{ namenode_start_script }} mode=a+x
+
+#Namenode Stop script
+- name: Check if the namenode stop_script exists
+  stat:
+    path: "{{ namenode_stop_script }}"
+  register: namenode_stop_script_path
+
+- name: Copy namenode_stop.sh
+  template: src=namenode_stop.sh dest={{ namenode_stop_script }}
+  when: namenode_stop_script_path.stat.exists == False
+
+- name: Changing perm of "namenode_stop.sh", adding "+x"
+  file: dest={{ namenode_stop_script }} mode=a+x
+
+#Active Namenode service
+- name: Check if the namenode service exists
+  stat:
+    path: "{{ services_directory }}/{{ namenode_service }}"
+  register: namenode_service_path
+
+- name: Create namenode service
+  template: src=namenode.service dest={{ services_directory }}/{{ namenode_service }}
+  when: namenode_service_path.stat.exists == False
+
+#Start first namenode
+- name: Start/Enable namenode service 
+  systemd:
+    daemon_reload: yes
+    state: started
+    enabled: yes
+    name: "{{ namenode_service }}"
+  when: ansible_eth0.ipv4.address == groups[group_names | first] | first
+
+#Initialize all namenodes except first with Standby mode
+- name: Check if namenodes standby format has been executed
+  stat:
+    path: "{{ scaffolding_dir }}/namenodes_standby_formatted"
+  register: standby_formatted_path
+
+- name: Format namenode as Standby
+  command: "{{hadoop_home}}/bin/hdfs namenode -bootstrapStandby"
+  become: yes
+  become_user: "{{user}}"
+  run_once: yes
+  ignore_errors: yes
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first) and (standby_formatted_path.stat.exists == False)
+
+- name: Create file to know that namenodes standby format has been executed
+  file: 
+    dest: "{{ scaffolding_dir }}/namenodes_standby_formatted"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first) and (standby_formatted_path.stat.exists == False)
+
+#Start all namenodes except first
+- name: Start/Enable namenode service 
+  systemd:
+    daemon_reload: yes
+    state: started
+    enabled: yes
+    name: "{{ namenode_service }}"
+  when: ansible_eth0.ipv4.address != groups[group_names | first] | first
+

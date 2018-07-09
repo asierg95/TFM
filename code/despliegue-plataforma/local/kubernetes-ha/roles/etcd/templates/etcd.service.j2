@@ -1,0 +1,15 @@
+[Unit]
+Description=etcd
+
+[Service]
+Type=notify
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+
+ExecStart=/opt/etcd/etcd --name {{ ansible_hostname }} --data-dir /var/lib/etcd --listen-client-urls http://{{ ansible_default_ipv4.address }}:2379 --advertise-client-urls http://{{ ansible_default_ipv4.address }}:2379 --listen-peer-urls http://{{ ansible_default_ipv4.address }}:2380 --initial-advertise-peer-urls http://{{ ansible_default_ipv4.address }}:2380 --initial-cluster {% for host in groups['masters'] %}{{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}{% endfor %} --heartbeat-interval 6000 --election-timeout 30000 --initial-cluster-token my-etcd-token --initial-cluster-state new
+
+[Install]
+WantedBy=multi-user.target
+

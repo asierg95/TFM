@@ -1,0 +1,16 @@
+[Unit]
+Description=Namenode
+Wants=zookeeper.service zkfc.service journalnode.service
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart={{ namenode_start_script }}
+ExecStop={{ namenode_stop_script }}
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target
+

@@ -1,0 +1,17 @@
+
+---
+
+#Arrancar HDFS
+
+#Inicializar namenode1
+
+
+
+#Iniciar el namenode2
+- name: Start namenode
+  shell: "{{hadoop_home}}/sbin/hadoop-daemon.sh start namenode"
+  become: yes
+  become_user: "{{user}}"
+  ignore_errors: yes
+  when: ansible_hostname == "{{ namenode2_hostnameOnly }}"
+

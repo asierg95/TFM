@@ -1,0 +1,16 @@
+
+---
+
+#Arrancar HDFS
+
+#Iniciar los journalnodes (en los namenodes uno y dos de momento)
+- name: Iniciar zkfc
+  shell: "{{hadoop_home}}/sbin/hadoop-daemon.sh start zkfc"
+  become: yes
+  become_user: "{{user}}"
+  ignore_errors: yes
+  when: (ansible_hostname == "{{ namenode1_hostnameOnly }}") or (ansible_hostname == "{{ namenode2_hostnameOnly }}")
+
+
+
+

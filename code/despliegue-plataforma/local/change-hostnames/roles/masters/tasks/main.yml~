@@ -1,0 +1,12 @@
+---
+
+#MASTERS HOSTNAMES
+
+- name: Cambiar nombre maquina /etc/hostname
+  template: src=hostname.j2 dest=/etc/hostname
+
+- name: Add static hostname
+  command: "hostnamectl set-hostname {{ nombre_servers }}{{ groups['masters'].index(inventory_hostname)+1 }} --static"
+
+- name: Add transient hostname
+  command: "hostname {{ nombre_servers }}{{ groups['masters'].index(inventory_hostname)+1 }}"

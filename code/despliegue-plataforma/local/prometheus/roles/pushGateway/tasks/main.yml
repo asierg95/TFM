@@ -1,0 +1,18 @@
+---
+
+# Prometheus Pushgateway deploy for Spark monitorization
+
+- name: Install python-setuptools
+  yum: name=python-pip state=latest
+
+- name: Install docker-py
+  pip:
+    name: docker-py
+
+- name: Deploy Prometheus Pushgateway docker container
+  docker:
+    name: prometheusPushgateway
+    image: prom/pushgateway
+    state: restarted
+    ports:
+    - "{{ pushgateway_port }}:9091"

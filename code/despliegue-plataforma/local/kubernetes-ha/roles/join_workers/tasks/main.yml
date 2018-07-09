@@ -1,0 +1,19 @@
+---
+
+# Workers join to kubernetes cluster
+- name: Check if the worker has been joined to the cluster
+  stat:
+    path: "{{ scaffolding_dir }}/kubeworker_joined"
+  register: kubeworker_joined
+
+- name: Join worker to k8s cluster
+  command: "{{ hostvars[groups['masters'][0]]['kubeadm_token'].stdout }}"
+  when: kubeworker_joined.stat.exists == False
+
+- name: Create file to know that kubeworker has been joined to the cluster
+  file: 
+    dest: "{{ scaffolding_dir }}/kubeworker_joined"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: kubeworker_joined.stat.exists == False

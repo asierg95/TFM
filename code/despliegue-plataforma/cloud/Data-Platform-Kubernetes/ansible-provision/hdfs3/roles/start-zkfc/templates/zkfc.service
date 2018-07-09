@@ -1,0 +1,15 @@
+[Unit]
+Description=zkfc
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart={{ zkfc_start_script }}
+ExecStop={{ zkfc_stop_script }}
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target
+

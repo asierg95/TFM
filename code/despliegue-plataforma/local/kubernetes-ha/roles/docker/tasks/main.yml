@@ -1,0 +1,22 @@
+---
+
+#DOCKER ALL NODES
+
+- name: Update Centos
+  yum: name=* state=latest
+
+- name: Check if Docker is already installed
+  stat:
+    path: "/etc/docker/"
+  register: docker_installed
+
+- name: Install Docker
+  yum: name=docker state=installed
+  when: docker_installed.stat.exists == False
+
+- name: Start/Enable Docker service 
+  systemd:
+    state: started
+    daemon_reload: yes
+    enabled: yes
+    name: docker

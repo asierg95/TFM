@@ -1,0 +1,9 @@
+[Unit]
+Description=My Script
+
+[Service]
+Type=forking
+ExecStart={{ jmx_exporter_home }}/run_sample_httpserver.sh
+
+[Install]
+WantedBy=multi-user.target

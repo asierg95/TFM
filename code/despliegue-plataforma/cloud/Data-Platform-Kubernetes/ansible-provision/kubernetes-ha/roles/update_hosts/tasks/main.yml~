@@ -1,0 +1,51 @@
+---
+
+#UPDATE NODES IN PARALLEL
+
+- name: Update Centos
+  yum: name=* state=latest
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  ignore_errors: True
+
+- name: Install dcos needed utilities
+  yum: name={{item}} state=installed
+  with_items:
+     - tar
+     - xz
+     - unzip
+     - curl
+     - ipset
+
+- name: Selinux permissive
+  shell: sed -i s/SELINUX=enforcing/SELINUX=permissive/g /etc/selinux/config
+
+- name: Add nogroup if not exists
+  shell: getent group nogroup || groupadd nogroup
+
+- stat: path=/etc/modules-load.d/overlay.conf
+  register: p
+
+- name: create modules-load.d/overlay.conf if not exists
+  file: path=/etc/modules-load.d/overlay.conf state=touch owner={{user}}
+  when: p.stat.exists is defined and not p.stat.exists
+
+- name: Enable OverlayFS
+  blockinfile:
+    dest: /etc/modules-load.d/overlay.conf
+    block: |
+      overlay
+
+- name: reboot host
+  command: /usr/bin/systemd-run --on-active=10 /usr/bin/systemctl reboot
+  async: 0
+  poll: 0
+
+- name: wait for host sshd
+  become: false 
+  local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=400 delay=60
+
+- name: Open ports 32768-65535 for VIP features
+  shell: iptables -A INPUT -p tcp --match multiport --dports 32768:65535  -j ACCEPT
+

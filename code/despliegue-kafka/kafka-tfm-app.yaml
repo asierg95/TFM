@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kafka-tfm
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kafka-tfm
+    spec:
+      containers:
+      - name: kafka-tfm
+        image: spotify/kafka
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9092
+          name: kafka-port
+        - containerPort: 2181
+          name: zookeeper-port
+        env:
+        - name: ADVERTISED_PORT
+          value: "31092"
+        - name: ADVERTISED_HOST
+          value: "172.16.8.233"
+      nodeSelector:
+        kubernetes.io/hostname: kubeworker2

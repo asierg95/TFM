@@ -1,0 +1,13 @@
+---
+
+- name: Stop Zookeeper
+  command: "sudo {{ zookeeper_home }}/{{ zookeeper_version }}/bin/zkServer.sh stop"
+
+- name: Create zookeeper service
+  template: src=zookeeper.service dest={{ services_directory }}/{{ zookeeper_service }}
+
+- name: Start/Enable zookeeper service 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ zookeeper_service }}"

@@ -1,0 +1,8 @@
+[prometheus]
+172.16.8.230
+
+[node_exporter]
+172.16.8.230
+
+[jmx_exporter]
+

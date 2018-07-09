@@ -1,0 +1,16 @@
+---
+
+- name: Stop datanode
+  shell: "{{hadoop_home}}/sbin/hadoop-daemon.sh stop datanode"
+  become: yes
+  become_user: "{{user}}"
+
+- name: Create datanode service
+  template: src=datanode.service dest={{ services_directory }}/{{ datanode_service }}
+
+- name: Start/Enable datanode service 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ datanode_service }}"
+

@@ -1,0 +1,89 @@
+---
+
+#ZOOKEEPERS
+
+#Stop firewalld
+- name: Check if Service Exists
+  stat: path=/usr/sbin/firewalld
+  register: firewall_exists
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  when: firewall_exists.stat.exists
+
+#Check if zookeeper is already installed and listening
+- name: Check if port 2181 of zookeeper is listening
+  wait_for:
+    port: 2181
+    delay: 5
+    timeout: 10
+    msg: "Timeout waiting for zookeeper service to respond"
+  register: port_check
+  ignore_errors: True
+
+# Create Zookeeper home directory
+- name: Check if the zookeeper home exists
+  stat:
+    path: "{{ zookeeper_home }}"
+  register: zookeeper_home_path
+
+- name: Create home directory
+  file: path={{ zookeeper_home }} state=directory mode=0755
+  when: (port_check.failed == true) and (zookeeper_home_path.stat.exists == False)
+
+- name: Change zookeeper home owner recursive
+  command: "chown -R {{user}}:{{group}} {{ zookeeper_home }}"
+  when: port_check.failed == true
+
+# Create Zookeeper data directory
+- name: Check if the zookeeper data directory exists
+  stat:
+    path: "{{ zookeeper_data_dir }}"
+  register: zookeeper_data_path
+
+- name: Create data directory
+  file: path={{ zookeeper_data_dir }} state=directory mode=0755
+  when: (port_check.failed == true) and (zookeeper_data_path.stat.exists == False)
+
+- name: Change zookeeper dataDir owner recursive
+  command: "chown -R {{ user }}:{{ group }} {{ zookeeper_data_dir }}"
+  when: port_check.failed == true
+
+# Adding Zookeeper IDs to "myid" file
+- name: Check if the zookeeper myid file exists
+  stat:
+    path: "{{ zookeeper_data_dir }}/myid"
+  register: zookeeper_myid_path
+
+- name: Copy myid file
+  template: src=myid.j2 dest={{ zookeeper_data_dir }}/myid
+  become: yes
+  become_user: "{{user}}"
+  when: (port_check.failed == true) and (zookeeper_myid_path.stat.exists == False)
+
+# Download and unpack Zookeeper
+- name: Check if the zookeeper files exists
+  stat:
+    path: "{{ zookeeper_home }}/{{ zookeeper_version }}"
+  register: zookeeper_files_path
+
+- name: Download Zookeeper
+  command: "wget -O {{ zookeeper_home }}.tar.gz {{ zookeeper_url }}"
+  when: (port_check.failed == true) and (zookeeper_files_path.stat.exists == False)
+
+- name: Unpack zookeeper
+  command: "{{ item }}"
+  with_items:
+  - tar xvzf {{ zookeeper_home }}.tar.gz
+  - mv -n {{ zookeeper_version }} {{ zookeeper_home }}
+  when: (port_check.failed == true) and (zookeeper_files_path.stat.exists == False)
+
+# Copy zookeeper config "zoo.cfg" file.
+- name: Copy zoo.cfg file
+  template: src=zoo.cfg.j2 dest={{ zookeeper_home }}/{{ zookeeper_version }}/conf/zoo.cfg
+  when: port_check.failed == true
+
+# Start zookeeper
+- name: Start zookeeper
+  command: "{{ zookeeper_home }}/{{ zookeeper_version }}/bin/zkServer.sh start"
+  when: port_check.failed == true

@@ -1,0 +1,76 @@
+---
+
+# Configuracion COMUN
+
+#Stop firewalld
+- name: Check if Service Exists
+  stat: path=/usr/sbin/firewalld
+  register: firewall_exists
+
+- name: Stop and disable firewall
+  shell: systemctl stop firewalld && systemctl disable firewalld
+  when: firewall_exists.stat.exists
+
+# Download Hadoop
+- name: Check if the version of Hadoop already exists
+  stat:
+    path: "{{ hadoop_home }}"
+  register: hadoop_install_path
+
+- name: Download Hadoop
+  get_url: url={{ hadoop_url }} dest={{ hadoop_home }}.tar.gz validate_certs=False
+  when: hadoop_install_path.stat.exists == False
+
+- name: Unzip Hadoop
+  command: "{{ item }}"
+  with_items:
+  - tar xzf {{ hadoop_home }}.tar.gz
+  - mv -n {{ hadoop_version }} {{ hadoop_home }}
+  when: hadoop_install_path.stat.exists == False
+
+# Add Hadoop environment
+- name: Setup the dedicated user environment
+  blockinfile:
+    dest: /home/{{ user }}/.bashrc
+    marker: "# {mark} ANSIBLE MANAGED BLOCK Hadoop"
+    block: |
+      #Hadoop path# 
+      HADOOP_PREFIX={{ hadoop_home }}/
+      export PATH=$PATH:$HADOOP_PREFIX/bin:$HADOOP_PREFIX/sbin
+      #Native path#
+      export HADOOP_COMMON_LIB_NATIVE_DIR=${HADOOP_PREFIX}/lib/native
+      export HADOOP_OPTS="-Djava.library.path=$HADOOP_PREFIX/lib/native"
+
+# Create Hadoop log directory
+- name: Check if hadoop log directory already exists
+  stat:
+    path: "{{ hadoop_log_dir }}"
+  register: hadoop_log_path
+
+- name: create Hadoop log directory 
+  file: path={{ hadoop_log_dir }} state=directory mode=0755 owner={{ user }}
+  when: hadoop_log_path.stat.exists == False
+
+# Create Hadoop scripts directory
+- name: Check if hadoop scripts directory already exists
+  stat:
+    path: "{{ scripts_dir }}"
+  register: scripts_dir_path
+
+- name: create Hadoop scripts directory 
+  file: path={{ scripts_dir }} state=directory mode=0755 owner={{ user }}
+  when: scripts_dir_path.stat.exists == False
+
+# Add Java and Hadoop environment to hadoop-env
+- name: Add java_home to hadoop-env.sh file
+  lineinfile: dest={{ hadoop_home }}/etc/hadoop/hadoop-env.sh line="export JAVA_HOME={{ java_home }}/" insertafter="{JAVA_HOME}"
+
+- name: Add hadoop_log_path to hadoop-env.sh file
+  lineinfile: dest={{ hadoop_home }}/etc/hadoop/hadoop-env.sh line="export HADOOP_LOG_DIR=/var/log/hadoop/" insertafter="HADOOP_HOME/logs by default."
+
+# Copy HDFS core-site.xml and hdfs-site.xml config files
+- name: Copy core-site.xml
+  template: src=core-site.xml.j2 dest={{ hadoop_home }}/etc/hadoop/core-site.xml
+
+- name: Copy hdfs-site.xml
+  template: src=hdfs-site.xml.j2 dest={{ hadoop_home }}/etc/hadoop/hdfs-site.xml

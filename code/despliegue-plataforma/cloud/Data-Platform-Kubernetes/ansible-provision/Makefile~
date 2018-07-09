@@ -1,0 +1,22 @@
+.PHONY: hdfs dcos hostnames vpn dcos-scale-cluster hdfs-scale-cluster ssh-keys
+
+hdfs: 	
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini hdfs/main.yml
+
+dcos:
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini dcos/main.yml
+
+hostnames:
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini hostnames/main.yml
+
+vpn:
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini vpn/main.yml
+
+dcos-scale-cluster:
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini dcos-scale-cluster/main.yml
+
+hdfs-scale-cluster:
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini hdfs-scale-cluster/main.yml
+
+hdfs-scale-cluster:
+	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory/hosts.ini hdfs-scale-cluster/main.yml

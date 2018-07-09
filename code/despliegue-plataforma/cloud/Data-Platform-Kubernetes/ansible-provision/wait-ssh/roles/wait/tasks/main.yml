@@ -1,0 +1,8 @@
+---
+
+#WAIT
+#Wait for start
+
+- name: wait for host ssh
+  become: false
+  local_action: wait_for host="{{ inventory_hostname }}" search_regex=OpenSSH port=22 timeout=4000 delay=1

@@ -1,0 +1,8 @@
+# Enable Prometheus for all instances by class name
+*.sink.prometheus.class=com.banzaicloud.spark.metrics.sink.PrometheusSink
+# Prometheus pushgateway address
+*.sink.prometheus.pushgateway-address-protocol=http
+*.sink.prometheus.pushgateway-address={{ prometheus_pushgateway_address }}
+*.sink.prometheus.period=10
+*.sink.prometheus.unit=SECONDS
+*.sink.prometheus.pushgateway-enable-timestamp=false

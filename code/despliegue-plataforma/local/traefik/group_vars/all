@@ -1,0 +1,18 @@
+---
+
+
+user: ikerlan
+
+traefik_home: /home/{{ user }}/traefik
+
+exec_user: root
+exec_group: root
+
+traefik_bin: /home/ikerlan/traefik1
+traefik_config_file: /home/ikerlan/traefik/traefik.toml
+
+#LOCAL
+local_traefik_dir: /home/ikerlan/Ik4-Data-Platform/ansible/playbooks/centos/traefik/roles/comun/files/traefik
+
+#DOWNLOAD URLS#
+traefik_bin_url: https://github.com/containous/traefik/releases/download/v1.6.4/traefik_linux-amd64

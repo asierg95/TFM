@@ -1,0 +1,6 @@
+---
+
+#Roles variables
+
+docker_version: docker-engine-1.13.1
+

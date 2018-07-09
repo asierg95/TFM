@@ -1,0 +1,14 @@
+[Unit]
+Description=namenode
+Wants=zookeeper.service zkfc.service journalnode.service namenode.service
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash -c "/opt/hadoop/sbin/hadoop-daemon.sh start namenode"
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target

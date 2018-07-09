@@ -1,0 +1,41 @@
+---
+
+user: ikerlan
+
+dcos_installer: "{{ dcos_latest_stable }}"
+dcos_cluster_name: IkerlanDCOS
+bootstrap_port: 7171
+dns_1: 172.16.255.58
+dns_2: 172.16.255.68
+dns_search: ikerlan.es
+
+#SSHPASS
+
+ssh_pass_installer: ftp://ftp.pbone.net/mirror/ftp5.gwdg.de/pub/opensuse/repositories/home:/KGronlund/CentOS_7/x86_64/sshpass-1.05-7.1.x86_64.rpm
+
+ssh_pass_rpm_dest: /home/{{user}}/sshpass.rpm
+
+
+#OS CONFIGURATIONS (CASSANDRA)
+
+vm_max_map_count: 1048575
+vm_swappiness: 0
+memlock: unlimited
+nofile: unlimited
+nproc: 32768
+
+#DCOS INSTALLER VERSIONS
+
+ #Available versions
+dcos_latest_stable: https://downloads.dcos.io/dcos/stable/dcos_generate_config.sh
+
+ #Older releases
+#stables
+dcos_v187: https://downloads.dcos.io/dcos/stable/commit/1b43ff7a0b9124db9439299b789f2e2dc3cc086c/dcos_generate_config.sh
+dcos_v185: https://downloads.dcos.io/dcos/stable/commit/e665123df0dbb19adacaefe47d16a3de144d5733/dcos_generate_config.sh
+dcos_v184: https://downloads.dcos.io/dcos/stable/commit/e64024af95b62c632c90b9063ed06296fcf38ea5/dcos_generate_config.sh
+
+#EarlyAccess
+dcos_v190_rc3: https://downloads.dcos.io/dcos/EarlyAccess/commit/e5b5e6e336763ba9c8ed2d8266c798873e501cb2/dcos_generate_config.sh
+
+#more releases: https://dcos.io/releases/

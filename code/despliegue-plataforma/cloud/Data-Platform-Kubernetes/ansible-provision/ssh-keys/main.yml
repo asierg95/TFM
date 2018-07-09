@@ -1,0 +1,21 @@
+---
+
+#MASTER & SLAVES
+
+- hosts: ssh_control
+  remote_user: "{{user}}"
+  become: True
+  serial: 1
+  roles:
+  - role: generate-ssh-key
+
+- hosts: nodes
+  remote_user: "{{user}}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: add-authorized-key
+  - role: disable-hostkeychecking
+
+
+

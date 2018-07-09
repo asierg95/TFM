@@ -1,0 +1,27 @@
+ # rules
+[backends]
+  [backends.backend1]
+    [backends.backend1.LoadBalancer]
+      method = "drr"
+    [backends.backend1.servers.server1]
+    url = "http://172.16.8.160:80/"
+  [backends.backend2]
+    [backends.backend2.LoadBalancer]
+      method = "drr"
+    [backends.backend2.servers.server1]
+    url = "http://172.16.8.163:5043"
+
+[frontends]
+  [frontends.frontend1]
+  backend = "backend1"
+  passHostHeader = true
+    [frontends.frontend1.routes.manager]
+    rule = "Host"
+    value = "manager.ikcloud.ikerlan.es"
+[frontends.frontend2]
+  backend = "backend2"
+  passHostHeader = true
+    [frontends.frontend2.routes.manager]
+    rule = "Host"
+    value = "registry.ikcloud.ikerlan.es"
+

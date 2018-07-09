@@ -1,0 +1,13 @@
+---
+
+user: ikerlan
+
+month: "*"
+weekday: "*"
+day: "*"
+hour: "*"
+minute: "0"
+
+cron_ntp_job: sudo /usr/sbin/ntpdate 172.16.255.58
+
+sudoers_file_path: /etc/sudoers

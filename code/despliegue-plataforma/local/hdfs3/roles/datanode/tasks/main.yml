@@ -1,0 +1,13 @@
+---
+
+#DATANODES
+
+# Create Hadoop data directory
+- name: Check if the hdfs data directory already exists
+  stat:
+    path: "{{ hdfs_data_dir }}"
+  register: hdfs_data_path
+
+- name: Data directory
+  file: path={{ hdfs_data_dir }} state=directory mode=0755 owner={{ user }}
+  when: hdfs_data_path.stat.exists == False

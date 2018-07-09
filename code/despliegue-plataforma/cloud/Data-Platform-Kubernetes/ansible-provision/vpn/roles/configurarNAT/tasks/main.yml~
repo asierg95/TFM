@@ -1,0 +1,20 @@
+---
+
+#TRAEFIK
+
+- name: Copiar configure-pat.sh
+  template: src=configure-pat.sh.j2 dest={{ configureNAT_home }}
+
+- name: Permisos execucion archivo configure-pat.sh
+  become: yes
+  become_method: sudo
+  shell: chmod u+x /usr/local/sbin/configure-pat.sh
+
+- name: Añadir configure-pat.sh a rc.local
+  lineinfile: dest={{ rclocal_path }} 
+                regexp='^Another'
+                insertafter='By default this script does nothing.'
+                line={{ configureNAT_home }}
+                state=present
+
+

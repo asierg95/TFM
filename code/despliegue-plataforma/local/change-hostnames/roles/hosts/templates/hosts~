@@ -1,0 +1,20 @@
+{% for ip in groups['comun'] %}
+"{{ip}}"	
+{% endfor %}
+
+127.0.0.1       localhost
+172.16.8.211    server1
+172.16.8.212    server2
+172.16.8.213    server3
+172.16.8.214    client1
+172.16.8.215    client2
+172.16.8.216    client3
+
+
+# The following lines are desirable for IPv6 capable hosts
+::1     ip6-localhost ip6-loopback
+fe00::0 ip6-localnet
+ff00::0 ip6-mcastprefix
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters
+

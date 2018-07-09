@@ -1,0 +1,27 @@
+---
+
+#CRON: Synchronize jobs CentOS
+
+- name: Ensure NTP is installed
+  yum: name=ntp state=installed
+
+- name: Create ntpdate.log file
+  file:
+    path: /tmp/ntpdate.log
+    state: touch
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: Remove requiretty
+  lineinfile:
+    dest: "{{ sudoers_file_path }}"
+    regexp: 'Defaults    requiretty'
+    line: '#Defaults    requiretty'
+
+#- name: Remove visiblepw
+#  lineinfile:
+#    dest: "{{ sudoers_file_path }}"
+#    regexp: 'Defaults   !visiblepw'
+#    line: '#Defaults   !visiblepw'
+
+

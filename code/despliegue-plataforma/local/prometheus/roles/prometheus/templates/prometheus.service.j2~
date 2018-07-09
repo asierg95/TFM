@@ -1,0 +1,10 @@
+[Unit]
+Description=prometheus
+After=local-fs.target
+
+[Service]
+ExecStart=/bin/bash -c "{{ prometheus_home }}/prometheus --config.file={{ prometheus_home }}/prometheus.yml --storage.tsdb.retention={{ storage_retention_time }}"
+restart=always
+
+[Install]
+WantedBy=default.target

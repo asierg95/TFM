@@ -1,0 +1,1 @@
+{{ nombre_clientes }}{{ groups['slaves'].index(inventory_hostname)+1 }}

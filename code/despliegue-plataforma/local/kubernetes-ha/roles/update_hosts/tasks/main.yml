@@ -1,0 +1,6 @@
+---
+
+#UPDATE NODES IN PARALLEL
+
+- name: Update Centos
+  yum: name=* state=latest

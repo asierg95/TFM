@@ -1,0 +1,3 @@
+{% for host in groups['slaves_private'] %}
+{{ hostvars[host]['ansible_fqdn'] }}
+{% endfor %}

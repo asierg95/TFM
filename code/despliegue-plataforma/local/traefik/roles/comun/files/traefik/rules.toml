@@ -1,0 +1,105 @@
+ # rules
+[backends]
+  [backends.backend1]
+    [backends.backend1.LoadBalancer]
+      method = "drr"
+    [backends.backend1.servers.server1]
+    url = "http://172.16.8.160:80/"
+  [backends.backend2]
+    [backends.backend2.LoadBalancer]
+      method = "drr"
+    [backends.backend2.servers.server1]
+    url = "http://172.16.8.163:9000/"
+  [backends.backend3]
+    [backends.backend3.LoadBalancer]
+      method = "drr"
+    [backends.backend3.servers.server1]
+    url = "http://172.16.8.163:9090/"
+  [backends.backend4]
+    [backends.backend4.LoadBalancer]
+      method = "drr"
+    [backends.backend4.servers.server1]
+    url = "http://172.16.8.166:3000/"
+[backends.backend5]
+    [backends.backend5.LoadBalancer]
+      method = "drr"
+    [backends.backend5.servers.server1]
+    url = "http://172.16.8.224:8003/"
+[backends.backend6]
+    [backends.backend6.LoadBalancer]
+      method = "drr"
+    [backends.backend6.servers.server1]
+    url = "http://172.16.8.225:3005/"
+   #url = "http://172.16.8.173:3002/"
+[backends.backend7]
+    [backends.backend7.LoadBalancer]
+      method = "drr"
+    [backends.backend7.servers.server1]
+    url = "http://172.16.8.224:3000"
+[backends.backend8]
+    [backends.backend8.LoadBalancer]
+      method = "drr"
+    [backends.backend8.servers.server1]
+    url = "http://172.16.8.224:8003"
+[backends.backend9]
+    [backends.backend9.LoadBalancer]
+      method = "drr"
+    [backends.backend9.servers.server1]
+    url = "http://172.16.8.224:9007"
+
+
+[frontends]
+  [frontends.frontend1]
+  backend = "backend1"
+  passHostHeader = true
+  entrypoints = ["http","https"]                               
+    [frontends.frontend1.routes.manager]
+    rule = "Host:manager.ikcloud.ikerlan.es"
+[frontends.frontend2]
+  backend = "backend2"
+  passHostHeader = true
+  entrypoints = ["http","https"]                               
+    [frontends.frontend2.routes.manager]
+    rule = "Host:sonar.ikcloud.ikerlan.es"
+[frontends.frontend3]
+  backend = "backend3"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend3.routes.manager]
+    rule = "Host:jenkins.ikcloud.ikerlan.es"
+[frontends.frontend4]
+  backend = "backend4"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend4.routes.manager]
+    rule = "Host:fagor-app.ikcloud.ikerlan.es"
+[frontends.frontend5]
+  backend = "backend5"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend5.routes.manager]
+    rule = "Host:fagor-ws.ikcloud.ikerlan.es"
+[frontends.frontend6]
+  backend = "backend6"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend6.routes.manager]
+    rule = "Host:gestamp.ikcloud.ikerlan.es"
+[frontends.frontend7]
+  backend = "backend7"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend7.routes.manager]
+    rule = "Host:gestamp-api.ikcloud.ikerlan.es"
+[frontends.frontend8]
+  backend = "backend8"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend8.routes.manager]
+    rule = "Host:gestamp-ingestws.ikcloud.ikerlan.es"
+[frontends.frontend9]
+  backend = "backend9"
+  passHostHeader = true
+  entrypoints = ["http","https"]
+    [frontends.frontend9.routes.manager]
+    rule = "Host:gestamp-premise.ikcloud.ikerlan.es"

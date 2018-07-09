@@ -1,0 +1,90 @@
+---
+
+# Masters initialize
+
+#Copy Kubernetes config
+- name: Copy kubernetes config.yaml
+  template: src=config.yaml.j2 dest={{ kubernetes_config_yaml_path }}
+
+# Initialize master 1
+- name: Check if the master has been initialized
+  stat:
+    path: "{{ scaffolding_dir }}/kubeadm_initiliazed"
+  register: kubeadm_initiliazed
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first)
+
+- name: Kubeadm init
+  command: kubeadm init --config={{ kubernetes_config_yaml_path }}
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first) and (kubeadm_initiliazed.stat.exists == False)
+
+- name: Create file to know that kubeadm has been initiliazed
+  file: 
+    dest: "{{ scaffolding_dir }}/kubeadm_initiliazed"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first) and (kubeadm_initiliazed.stat.exists == False)
+
+# Copy kubernetes certs from master1 to others
+- name: Fetch kubernetes certs from master1
+  fetch:
+    src: /etc/kubernetes/pki/ca.crt
+    dest: /tmp
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first)
+
+- name: Fetch kubernetes certs from master1
+  fetch:
+    src: "{{ kubernetes_certs }}/{{ item }}"
+    dest: /tmp
+  with_items:
+     - ca.crt
+     - ca.key
+     - sa.key
+     - sa.pub
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first)
+
+- name: Create kubernetes pki certs directory
+  file: path={{ kubernetes_certs }} state=directory
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first)
+
+- name: Copy kubernetes certs from master1 to the rest of the masters
+  copy:
+    src: "/tmp/{{ hostvars[groups['masters'][0]]['ansible_eth0']['ipv4']['address'] }}{{ kubernetes_certs }}/{{ item }}"
+    dest: "{{ kubernetes_certs }}/{{ item }}"
+  with_items:
+     - ca.crt
+     - ca.key
+     - sa.key
+     - sa.pub
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first)
+
+# Initialize rest of the masters
+- name: Check if the master has been initialized
+  stat:
+    path: "{{ scaffolding_dir }}/kubeadm_initiliazed"
+  register: kubeadm_initiliazed
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first)
+
+- name: Kubeadm init
+  command: kubeadm init --config={{ kubernetes_config_yaml_path }}
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first) and (kubeadm_initiliazed.stat.exists == False)
+
+- name: Create file to know that kubeadm has been initiliazed
+  file: 
+    dest: "{{ scaffolding_dir }}/kubeadm_initiliazed"
+    state: touch
+    owner: "{{ user }}"
+    mode: 0644
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first) and (kubeadm_initiliazed.stat.exists == False)
+
+- name: Create kubectl nonroot directory
+  file: path={{ user_home }}/.kube state=directory
+
+- name: Copy kubernetes admin.conf file to kubernetes config directory
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "{{ user_home }}/.kube/config"
+    remote_src: yes
+    owner: "{{ user }}"
+    group: "{{ group }}"
+

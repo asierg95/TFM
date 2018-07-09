@@ -1,0 +1,13 @@
+[Unit]
+Description=zookeeper
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/zookeeper/zookeeper-3.4.9/bin/zkServer.sh start
+Restart=always
+User=root
+Group=root
+
+[Install]
+WantedBy=default.target

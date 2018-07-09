@@ -1,0 +1,29 @@
+---
+
+#DATANODE SERVICE
+
+# Create Datanode service
+- name: Check if the datanode service already exists
+  stat:
+    path: "{{ services_directory }}/{{ datanode_service }}"
+  register: datanode_service_path
+
+- name: Stop datanode
+  shell: "{{hadoop_home}}/sbin/hadoop-daemon.sh stop datanode"
+  become: yes
+  become_user: "{{user}}"
+  when: datanode_service_path.stat.exists == False
+
+- name: Create datanode service
+  template: src=datanode.service dest={{ services_directory }}/{{ datanode_service }}
+  when: datanode_service_path.stat.exists == False
+
+# Start Datanode service
+- name: Start/Enable datanode service 
+  systemd:
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    name: "{{ datanode_service }}"
+
+

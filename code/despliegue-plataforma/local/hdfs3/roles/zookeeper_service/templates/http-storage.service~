@@ -1,0 +1,16 @@
+[Unit]
+Description=File storage service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory={{ storage_dir }}
+ExecStart={{ python3_path }} -m http.server {{ port }}
+Restart=always
+User={{ exec_user }}
+Group={{ exec_group }}
+
+[Install]
+WantedBy=multi-user.target
+
+

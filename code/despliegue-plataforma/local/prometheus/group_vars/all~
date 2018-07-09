@@ -1,0 +1,29 @@
+---
+
+#MACHINES CONFIGS#
+
+user: ikerlan
+
+local_jmx_files_dir: "/home/ikerlan/Ik4-Data-Platform/ansible/playbooks/centos/prometheus/roles/JMX_Exporter/files/jmx-exporter"
+
+#JMX_EXPORTER
+http_host_port: 8080
+jmx_port: 9999
+#jmx_host: 172.16.8.165
+
+#PROMETHEUS
+prometheus_version: 2.0.0
+
+#SERVICES
+services_directory: /etc/systemd/system
+prometheus_service: prometheus.service
+node_exporter_service: node_exporter.service
+jmx_docker_service: jmx_exporter.service
+
+#HOMES#
+prometheus_home: "/home/{{ user }}/Prometheus/prometheus"
+node_exporter_home: "/home/{{ user }}/Prometheus/node_exporter"
+
+#DOWNLOAD URLs#
+prometheus_url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+node_exporter_url: https://github.com/prometheus/node_exporter/releases/download/v0.14.0/node_exporter-0.14.0.linux-amd64.tar.gz

@@ -1,0 +1,46 @@
+
+---
+
+#Arrancar HDFS
+
+#zkfc Start script
+- name: Check if the zkfc start_script exists
+  stat:
+    path: "{{ zkfc_start_script }}"
+  register: zkfc_start_script_path
+
+- name: Copy zkfc_start.sh
+  template: src=zkfc_start.sh dest={{ zkfc_start_script }}
+  when: zkfc_start_script_path.stat.exists == False
+
+- name: Changing perm of "zkfc_start.sh", adding "+x"
+  file: dest={{ zkfc_start_script }} mode=a+x
+
+#zkfc Stop script
+- name: Check if the zkfc start_script exists
+  stat:
+    path: "{{ zkfc_stop_script }}"
+  register: zkfc_stop_script_path
+
+- name: Copy zkfc_stop.sh
+  template: src=zkfc_stop.sh dest={{ zkfc_stop_script }}
+  when: zkfc_stop_script_path.stat.exists == False
+
+- name: Changing perm of "zkfc_stop.sh", adding "+x"
+  file: dest={{ zkfc_stop_script }} mode=a+x
+
+#Zkfc service
+- name: Check if the zkfc start_script exists
+  stat:
+    path: "{{ services_directory }}/{{ zkfc_service }}"
+  register: zkfc_service_path
+
+- name: Create zkfc service
+  template: src=zkfc.service dest={{ services_directory }}/{{ zkfc_service }}
+  when: zkfc_service_path.stat.exists == False
+
+- name: Start/Enable zkfc service 
+  systemd:
+    daemon_reload: yes
+    state: started
+    name: "{{ zkfc_service }}"

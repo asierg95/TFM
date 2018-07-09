@@ -1,0 +1,49 @@
+---
+# Kubernetes
+
+- hosts: masters_public:workers_public
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: update_hosts
+  - role: docker
+  - role: common
+  - role: update_hosts
+  - role: disable_swap
+
+- hosts: masters_public
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: initialize_masters
+
+- hosts: masters_public
+  remote_user: "{{ user }}"
+  become: False
+  serial: "100%"
+  roles:
+  - role: calico_network
+
+- hosts: masters_public
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: register_kubeadm_join
+
+- hosts: workers_public
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: join_workers
+
+- hosts: masters_public
+  remote_user: "{{ user }}"
+  become: False
+  serial: "100%"
+  roles:
+  - role: dashboard
+

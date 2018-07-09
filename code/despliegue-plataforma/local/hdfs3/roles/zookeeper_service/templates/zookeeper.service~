@@ -1,0 +1,18 @@
+[Unit]
+Description=Apache Zookeeper
+After=network.target
+
+[Service]
+Type=forking
+#User=zookeeper
+#Group=zookeeper
+#SyslogIdentifier=zookeeper
+Restart=always
+RestartSec=0s
+PIDFile=/var/lib/zookeeper/zookeeper_server.pid
+ExecStart={{ zookeeper_home }}/{{ zookeeper_version }}/bin/zkServer.sh start
+ExecStop={{ zookeeper_home }}/zookeeper-3.4.9/bin/zkServer.sh stop
+ExecReload={{ zookeeper_home }}/zookeeper-3.4.9/bin/zkServer.sh restart
+
+[Install]
+WantedBy=multi-user.target

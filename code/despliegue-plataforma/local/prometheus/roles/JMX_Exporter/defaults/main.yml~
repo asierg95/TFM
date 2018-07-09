@@ -1,0 +1,7 @@
+---
+
+#Roles variables
+
+jmx_docker_image: jmx_exporter
+http_host_port: 8080
+jmx_port: 9999

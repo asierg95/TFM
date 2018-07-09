@@ -1,0 +1,14 @@
+[Unit]
+Description=journalnode
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash -c "/opt/hadoop/sbin/hadoop-daemon.sh start journalnode"
+Restart=always
+User=ikerlan
+Group=ikerlan
+
+[Install]
+WantedBy=default.target
+

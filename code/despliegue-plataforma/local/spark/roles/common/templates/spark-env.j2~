@@ -1,0 +1,9 @@
+export SPARK_WORKER_MEMORY={{ spark_worker_memory }}
+export SPARK_EXECUTOR_MEMORY={{ spark_executor_memory }}
+export SPARK_WORKER_INSTANCES={{ spark_worker_instances }}
+export SPARK_WORKER_CORES={{ spark_worker_cores }}
+export SPARK_WORKER_DIR={{ spark_dir }}
+export SPARK_MASTER_IP={{ spark_master_ip }}
+export SPARK_MASTER_WEBUI_PORT={{ spark_master_webui }}
+SPARK_MASTER_PORT=7077
+

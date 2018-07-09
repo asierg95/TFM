@@ -1,0 +1,26 @@
+---
+
+- name: Download prometheus
+  get_url:
+    url: "{{ prometheus_url }}"
+    dest: /home/{{ user }}/prometheus.tar.gz
+
+- name: Create prometheus directory
+  file:
+    path: "{{ prometheus_home }}"
+    state: directory
+
+- name: Unzip prometheus
+  command: "{{ item }}"
+  with_items:
+  - mkdir -p {{ prometheus_home }}
+  - tar xvzf prometheus.tar.gz -C {{ prometheus_home }} --strip-components 1
+
+- name: prometheus service
+  template: src=prometheus.service.j2 dest={{ services_directory }}/{{ prometheus_service }}
+
+- name: Start/Enable prometheus service 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ prometheus_service }}"

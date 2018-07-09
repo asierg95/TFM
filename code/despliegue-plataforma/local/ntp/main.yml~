@@ -1,0 +1,14 @@
+---
+
+#MASTER & SLAVES
+
+- hosts: hosts
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+#  - role: ntp
+  - role: cron
+
+
+

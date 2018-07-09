@@ -1,0 +1,31 @@
+---
+
+# ETCD Installation
+
+# Create etcd home
+- name: create etcd home directory 
+  file: path={{ etcd_home }} state=directory mode=0755 owner={{ user }}
+
+- name: Download etcd
+  get_url: url={{ etcd_url }} dest={{ etcd_download_dir }} validate_certs=False
+
+#Unzip etcd
+- name: Check if etcd home Exists
+  stat: path="{{ etcd_home }}/etcd"
+  register: etcd_exists
+
+- name: Unzip etcd
+  command: "tar xzvf {{ etcd_download_dir }} -C {{ etcd_home }} --strip-components=1"
+  when: etcd_exists.stat.exists == false
+
+# Copy etcd service
+- name: Copy etcd.service
+  template: src=etcd.service.j2 dest={{ services_directory }}/{{ etcd_service }}
+
+- name: Start/Enable Etcd 
+  systemd:
+    name: etcd
+    state: started
+    daemon_reload: yes
+    enabled: yes
+

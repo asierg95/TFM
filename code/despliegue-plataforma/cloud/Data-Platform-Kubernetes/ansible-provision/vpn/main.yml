@@ -1,0 +1,9 @@
+---
+# Install VPN on public slaves
+
+- hosts: bastion_public
+  remote_user: "{{ user }}"
+  become: True
+  serial: 1
+  roles:
+  - role: instalarVPN

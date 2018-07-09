@@ -1,0 +1,24 @@
+---
+
+# Keepalived Installation
+
+- name: Install keepalived
+  yum: name=keepalived state=installed
+
+# Copy keepalived config
+- name: Copy keepalived-leader.config
+  template: src=leader-keepalived.conf.j2 dest={{ keepalived_home }}/keepalived.conf
+  when: (ansible_eth0.ipv4.address == groups[group_names | first] | first)
+
+- name: Copy keepalived-master.config
+  template: src=masters-keepalived.conf.j2 dest={{ keepalived_home }}/keepalived.conf 
+  when: (ansible_eth0.ipv4.address != groups[group_names | first] | first)
+
+#Copy check apiserver
+- name: Copy check_apiserver script
+  template: src=check_apiserver.sh.j2 dest={{ keepalived_home }}/check_apiserver.sh
+
+- name: Restart Keepalived 
+  systemd:
+    name: keepalived
+    state: restarted

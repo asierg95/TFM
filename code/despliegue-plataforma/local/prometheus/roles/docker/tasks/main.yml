@@ -1,0 +1,64 @@
+---
+
+#DOCKER ALL NODES
+
+- name: Update Centos
+  yum: name=* state=latest
+
+- stat: path=/etc/modules-load.d/overlay.conf
+  register: p
+
+- name: create modules-load.d/overlay.conf if not exists
+  file: path=/etc/modules-load.d/overlay.conf state=touch owner={{user}}
+  when: p.stat.exists is defined and not p.stat.exists
+
+- name: Enable OverlayFS
+  blockinfile:
+    dest: /etc/modules-load.d/overlay.conf
+    block: |
+      overlay
+
+- stat: path=/etc/yum.repos.d/docker.repo
+  register: p
+
+- name: create yum.repos.d/docker.repo if not exists
+  file: path=/etc/yum.repos.d/docker.repo state=touch owner={{user}}
+  when: p.stat.exists is defined and not p.stat.exists
+
+- name: Configure yum to use the Docker yum repo
+  blockinfile:
+    dest: /etc/yum.repos.d/docker.repo
+    block: |
+      [dockerrepo]
+      name=Docker Repository
+      baseurl=https://yum.dockerproject.org/repo/main/centos/$releasever/
+      enabled=1
+      gpgcheck=1
+      gpgkey=https://yum.dockerproject.org/gpg
+
+- name: Create dockerService directory
+  file: path=/etc/systemd/system/docker.service.d state=directory
+
+- stat: path=/etc/systemd/system/docker.service.d/override.conf
+  register: p
+
+- name: Create docker.service.d/override.conf if not exists
+  file: path=/etc/systemd/system/docker.service.d/override.conf state=touch owner={{user}}
+  when: p.stat.exists is defined and not p.stat.exists
+
+- name: Configure systemd to run the Docker Daemon with OverlayFS
+  blockinfile:
+    dest: /etc/systemd/system/docker.service.d/override.conf
+    block: |
+     [Service]
+     ExecStart=
+     ExecStart=/usr/bin/dockerd --storage-driver=overlay
+
+- name: Install docker engine
+  yum: name={{ docker_version }} state=latest
+
+- name: Start docker
+  shell: systemctl start docker
+
+- name: Enable docker
+  shell: systemctl enable docker

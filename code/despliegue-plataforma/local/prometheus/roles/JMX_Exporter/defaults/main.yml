@@ -1,0 +1,5 @@
+---
+
+#Roles variables
+
+jmx_docker_image: jmx_exporter

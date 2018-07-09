@@ -1,0 +1,13 @@
+---
+
+#MASTER & SLAVES
+
+- hosts: masters_public:agents
+  remote_user: "{{ user }}"
+  become: True
+  serial: "100%"
+  roles:
+  - role: wait
+
+
+

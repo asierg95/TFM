@@ -1,0 +1,7 @@
+---
+      
+- name: Disable StrictHostKeyChecking
+  blockinfile:
+    dest: "{{ ssh_config_file }}"
+    block: |
+      StrictHostKeyChecking	no 

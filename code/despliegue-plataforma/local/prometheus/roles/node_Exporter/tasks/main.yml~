@@ -1,0 +1,26 @@
+---
+
+- name: Download nodeExporter
+  get_url:
+    url: "{{ node_exporter_url }}"
+    dest: /home/{{ user }}/nodeExporter.tar.gz
+
+- name: Create nodeExporter directory
+  file:
+    path: "{{ node_exporter_home }}"
+    state: directory
+
+- name: Unzip nodeExporter
+  command: "{{ item }}"
+  with_items:
+  - mkdir -p {{ node_exporter_home }}
+  - tar xvzf nodeExporter.tar.gz -C {{ node_exporter_home }} --strip-components 1
+
+- name: node_exporter service
+  template: src=nodeExporter.service.j2 dest={{ services_directory }}/{{ node_exporter_service }}
+
+- name: Start/Enable node_exporter service 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: "{{ node_exporter_service }}"

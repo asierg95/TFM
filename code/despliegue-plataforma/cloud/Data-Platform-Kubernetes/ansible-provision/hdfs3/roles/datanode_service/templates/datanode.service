@@ -1,0 +1,14 @@
+[Unit]
+Description=datanode
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart=/bin/bash -c "{{ hadoop_home }}/sbin/hadoop-daemon.sh start datanode"
+ExecStop=/bin/bash -c "{{ hadoop_home }}/sbin/hadoop-daemon.sh stop datanode"
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target

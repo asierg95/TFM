@@ -1,0 +1,14 @@
+[Unit]
+Description=Traefik
+After=network.target
+
+[Service]
+Type=simple
+ExecStart={{ traefik_bin }} --configFile={{ traefik_config_file }}
+Restart=always
+User={{ exec_user }}
+Group={{ exec_group }}
+
+[Install]
+WantedBy=multi-user.target
+

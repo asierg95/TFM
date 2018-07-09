@@ -1,0 +1,15 @@
+[Unit]
+Description=journalnode
+After=local-fs.target
+
+[Service]
+Type=forking
+ExecStart={{ journalnode_start_script }}
+ExecStop={{ journalnode_stop_script }}
+Restart=always
+User={{ user }}
+Group={{ user }}
+
+[Install]
+WantedBy=default.target
+

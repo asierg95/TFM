@@ -1,0 +1,50 @@
+---
+
+#MACHINES CONFIGS#
+
+user: ikerlan
+group: ikerlan
+
+namenode1_fqdn: master1
+namenode2_fqdn: master2
+namenode3_fqdn: master3
+
+namenode1_hostnameOnly: master1
+namenode2_hostnameOnly: master2
+namenode3_hostnameOnly: master3
+
+ssh_keys_path: /home/{{ user }}/.ssh/id_rsa
+
+#Services
+services_directory: /etc/systemd/system
+
+zkfc_service: zkfc.service
+zookeeper_service: zookeeper.service
+journalnode_service: journalnode.service
+namenode_service: namenode.service
+datanode_service: datanode.service
+
+#VERSIONS#
+hadoop_version: hadoop-2.7.3
+zookeeper_version: zookeeper-3.4.9
+
+#HADOOP CONFIGURATION#
+hadoop_directory: /opt
+hadoop_home: "{{ hadoop_directory }}/hadoop"
+hadoop_log_dir: /var/log/hadoop
+hdfs_data_dir: /hdfs/data
+hdfs_name_dir: /hdfs/name
+hdfs_journal_dir: /hdfs/journal
+
+#ZOOKEEPER CONFIGURATION#
+zookeeper_directory: /usr/local
+zookeeper_home: "{{ zookeeper_directory }}/zookeeper"
+zookeeper_data_dir: /var/lib/zookeeper
+
+#JAVA CONFIGURATION#
+java_home: /usr/java/jdk1.8.0_60/jre
+
+#DOWNLOAD URLs#
+hadoop_url: https://www.apache.org/dist/hadoop/core/{{hadoop_version}}/{{hadoop_version}}.tar.gz
+zookeeper_url: http://www.apache.org/dist/zookeeper/{{ zookeeper_version }}/{{ zookeeper_version }}.tar.gz
+jdk_url: http://download.oracle.com/otn-pub/java/jdk/{{ jdk_version }}/{{ jdk_release }}.rpm

@@ -1,0 +1,30 @@
+---
+# Zookeeper Service
+
+#Check if zookeeper home exists
+- name: Check if the zookeeper home exists
+  stat:
+    path: "{{ zookeeper_home }}/{{ zookeeper_version }}"
+  register: zookeeper_home_path
+
+- name: Check if zookeeper service already exists
+  stat:
+    path: "{{ services_directory }}/{{ zookeeper_service }}"
+  register: zookeeper_services_path
+
+# Stop zookeeper manual running
+- name: Stop Zookeeper
+  command: "sudo {{ zookeeper_home }}/{{ zookeeper_version }}/bin/zkServer.sh stop"
+  when: (zookeeper_services_path.stat.exists == False) and (zookeeper_home_path.stat.exists == True)
+
+# Zookeeper service
+- name: Create zookeeper service
+  template: src=zookeeper.service dest={{ services_directory }}/{{ zookeeper_service }}
+  when: (zookeeper_services_path.stat.exists == False) and (zookeeper_home_path.stat.exists == True)
+
+- name: Start/Enable zookeeper service 
+  systemd:
+    state: started
+    daemon_reload: yes
+    name: "{{ zookeeper_service }}"
+  when: (zookeeper_home_path.stat.exists == True) and (zookeeper_services_path.stat.exists == True)
